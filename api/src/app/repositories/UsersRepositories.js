@@ -1,4 +1,6 @@
 const { v4 } = require('uuid')
+
+const db = require('../../database')
 let users = [
     {
         id: v4(),
@@ -43,19 +45,14 @@ class UsersRepositories {
         })
     }
 
-    create({ email, passwordHash, access_level }) {
-        return new Promise((resolve) => {
+    async create({ email, password_hash, access_level }) {
+        const [row] = await db.query(
+            `INSERT INTO users(email, password, access_level)
+            VALUES($1,$2,$3)
+            RETURNING *
+            `, [email, password_hash, access_level])
 
-            const newUser = {
-                id: v4(),
-                email,
-                password: passwordHash,
-                access_level
-            }
-
-            users.push(newUser)
-            resolve(newUser)
-        })
+        return row;
     }
 
     update(id, { email, passwordHash, access_level }) {

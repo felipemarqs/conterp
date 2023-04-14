@@ -61,7 +61,7 @@ class UserController {
         //Gerar hash da senha
         const salt = await bcrypt.genSalt();
         const passwordHash = await bcrypt.hash(password, salt);
-        const newUser = await UsersRepositories.create({ email, passwordHash, access_level })
+        const newUser = await UsersRepositories.create({ email, password_hash: passwordHash, access_level })
 
         //Se cadastrado com sucesso retornar o Token
         if (newUser) {
