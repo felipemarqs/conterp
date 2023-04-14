@@ -43,13 +43,13 @@ class UsersRepositories {
         })
     }
 
-    create({ email, password, access_level }) {
+    create({ email, passwordHash, access_level }) {
         return new Promise((resolve) => {
 
             const newUser = {
                 id: v4(),
                 email,
-                password,
+                password: passwordHash,
                 access_level
             }
 
@@ -58,13 +58,13 @@ class UsersRepositories {
         })
     }
 
-    update(id, { email, password, access_level }) {
+    update(id, { email, passwordHash, access_level }) {
         return new Promise((resolve) => {
 
             const updatedUser = {
                 id,
                 email,
-                password,
+                password: passwordHash,
                 access_level
             }
 

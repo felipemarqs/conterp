@@ -1,5 +1,13 @@
-const { response } = require('express');
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const jwtSecret = process.env.JWT_SECRET;
 const UsersRepositories = require('../repositories/UsersRepositories')
+
+const generateToken = (id) => {
+    return jwt.sign({ id }, jwtSecret, {
+        expiresIn: '7d',
+    })
+}
 
 class UserController {
 
@@ -49,11 +57,16 @@ class UserController {
         if (userExists) {
             return response.status(400).json({ error: 'Email já cadastrado!' })
         }
-        const user = await UsersRepositories.create({ email, password, access_level })
 
+        //Gerar hash da senha
+        const salt = await bcrypt.genSalt();
+        const passwordHash = await bcrypt.hash(password, salt);
+        const newUser = await UsersRepositories.create({ email, passwordHash, access_level })
 
-
-        response.json(user)
+        //Se cadastrado com sucesso retornar o Token
+        if (newUser) {
+            response.status(201).json({ id: newUser.id, token: generateToken(newUser.id) })
+        }
     }
 
     //Update a user
@@ -93,11 +106,15 @@ class UserController {
             return response.status(400).json({ error: 'Email já cadastrado!' })
         }
 
-        const user = await UsersRepositories.update(id, {
-            email, password, access_level
+
+        const salt = await bcrypt.genSalt();
+        const passwordHash = await bcrypt.hash(password, salt);
+
+        const updatedUser = await UsersRepositories.update(id, {
+            email, passwordHash, access_level
         })
 
-        response.json(user)
+        response.json(updatedUser)
     }
 
     //Delete a user
@@ -113,6 +130,36 @@ class UserController {
 
         response.sendStatus(204);
 
+    }
+
+    async login(request, response) {
+        const { email, password } = request.body
+
+        if (!email) {
+            return response.status(400).json({ error: "Email é obrigatório!" })
+        }
+
+        if (!password) {
+            return response.status(400).json({ error: "Senha é obrigatório!" })
+        }
+
+        const user = await UsersRepositories.findByEmail(email)
+
+        //Verificar se o usuário existe
+        if (!user) {
+            return response.status(404).json({ error: "Usuário não encontrado" })
+        }
+
+        //Checar se as senhas conferem
+
+        if (!(await bcrypt.compare(password, user.password))) {
+            return response.status(401).json({ error: "Credenciais inválidas" })
+        }
+
+        response.status(201).json({
+            id: user.id,
+            token: generateToken(user.id)
+        })
     }
 
 
