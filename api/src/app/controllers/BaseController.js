@@ -1,4 +1,5 @@
 const BasesRepositories = require('../repositories/BasesRepositories')
+const UserRepositories = require('../repositories/UsersRepositories')
 const isValidUUID = require('../utils/isValidUUID')
 
 class BaseController {
@@ -30,7 +31,18 @@ class BaseController {
         const { name, user_id } = request.body
 
         if (!name) {
-            return response.status(404).json({ error: "Name is required!" });
+            return response.status(404).json({ error: "Nome é obrigatório!" });
+        }
+
+        const baseNameExists = await BasesRepositories.findByName(name)
+
+        if (baseNameExists) {
+            return response.status(404).json({ error: "Nome já existe!" })
+        }
+        const userExists = await UserRepositories.findById(user_id)
+
+        if (!userExists) {
+            return response.status(404).json({ error: "Usuário não encontrado" })
         }
 
         if (!isValidUUID(user_id)) {
@@ -78,6 +90,8 @@ class BaseController {
     }
 
     async delete(request, response) {
+        const { id } = request.params
+
         await BasesRepositories.delete(id)
         response.sendStatus(204);
     }

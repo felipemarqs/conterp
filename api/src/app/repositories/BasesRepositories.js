@@ -2,7 +2,7 @@ const db = require("../../database/index")
 class BasesRepositories {
 
     async findAll() {
-        const [rows] = await db.query(`SELECT * FROM bases`)
+        const rows = await db.query(`SELECT * FROM bases`)
 
         return rows
     }
@@ -36,6 +36,11 @@ class BasesRepositories {
         `, [name, user_id, id])
 
         return row
+    }
+
+    async delete(id) {
+        const deleteOp = await db.query('DELETE FROM bases WHERE id = $1', [id])
+        return deleteOp
     }
 }
 
