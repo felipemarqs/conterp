@@ -16,7 +16,9 @@ router.put('/users/:id', UserController.update)
 
 // Base Routes
 router.get('/bases', BaseController.index)
+router.get('/bases/:id', BaseController.show)
 router.post('/bases', BaseController.store)
+router.put('/bases/:id', BaseController.update)
 
 
 
