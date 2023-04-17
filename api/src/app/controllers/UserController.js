@@ -13,7 +13,9 @@ class UserController {
 
     //List all users
     async index(request, response) {
-        const users = await UsersRepositories.findAll();
+
+        const { orderBy } = request.query
+        const users = await UsersRepositories.findAll(orderBy);
 
         response.json(users)
 
@@ -25,8 +27,6 @@ class UserController {
         const { id } = request.params
 
         const user = await UsersRepositories.findById(id)
-
-        console.log(user)
 
         if (!user) {
             return response.status(404).json({ error: 'Usuário não encontrado.' })
@@ -78,7 +78,6 @@ class UserController {
         //Verifica se existe um usuário com ID
         const userIdExists = await UsersRepositories.findById(id)
 
-        console.log("User ID", userIdExists)
 
         if (!userIdExists) {
             return response.status(404).json({ error: 'Usuário não encontrado.' })
@@ -100,7 +99,6 @@ class UserController {
 
         const userEmailExists = await UsersRepositories.findByEmail(email)
 
-        console.log("User Email", userEmailExists)
 
         if (userEmailExists && userEmailExists.id !== id) {
             return response.status(400).json({ error: 'Email já cadastrado!' })
@@ -120,11 +118,6 @@ class UserController {
     //Delete a user
     async delete(request, response) {
         const { id } = request.params
-        const user = await UsersRepositories.findById(id)
-
-        if (!user) {
-            return response.status(404).json({ error: 'Usuário não encontrado.' })
-        }
 
         await UsersRepositories.delete(id)
 

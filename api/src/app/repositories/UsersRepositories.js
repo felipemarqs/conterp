@@ -1,48 +1,21 @@
-const { v4 } = require('uuid')
-
 const db = require('../../database')
-let users = [
-    {
-        id: v4(),
-        email: 'felipe@email.com',
-        password: '123',
-        accessLevel: 'user'
-    },
-    {
-        id: v4(),
-        email: 'user1@test.com',
-        password: 'password123',
-        accessLevel: 'user'
-    }
-]
-
-
 
 class UsersRepositories {
+    async findAll(orderBy = 'ASC') {
 
-    findAll() {
-        return new Promise((resolve) => {
-            resolve(users)
-        })
+        const direction = orderBy.toUpperCase() === "DESC" ? "DESC" : 'ASC'
+        const rows = await db.query(`SELECT * FROM users ORDER BY email ${direction}`)
+        return rows
     }
 
-    findById(id) {
-        return new Promise((resolve, reject) => resolve(
-            users.find((user) => user.id === id)
-        ))
+    async findById(id) {
+        const [row] = await db.query('SELECT * FROM users WHERE id = $1', [id])
+        return row
     }
 
-    findByEmail(email) {
-        return new Promise((resolve, reject) => resolve(
-            users.find((user) => user.email === email)
-        ))
-    }
-
-    delete(id) {
-        return new Promise((resolve) => {
-            users = users.filter((user) => user.id !== id)
-            resolve()
-        })
+    async findByEmail(email) {
+        const [row] = await db.query('SELECT * FROM users WHERE email = $1', [email])
+        return row
     }
 
     async create({ email, password_hash, access_level }) {
@@ -55,25 +28,20 @@ class UsersRepositories {
         return row;
     }
 
-    update(id, { email, passwordHash, access_level }) {
-        return new Promise((resolve) => {
-
-            const updatedUser = {
-                id,
-                email,
-                password: passwordHash,
-                access_level
-            }
-
-            users = users.map((user) => (
-                user.id === id ? updatedUser : user
-            ))
-
-            resolve(updatedUser)
-        })
+    async update(id, { email, passwordHash, access_level }) {
+        const [row] = await db.query(`
+        UPDATE users
+        SET email = $1, password = $2, access_level = $3 
+        WHERE id = $4
+        RETURNING *
+       `, [email, passwordHash, access_level, id])
+        return row
     }
 
-
+    async delete(id) {
+        const deleteOp = await db.query('DELETE FROM users WHERE id = $1', [id]);
+        return deleteOp
+    }
 }
 
 module.exports = new UsersRepositories()
