@@ -1,0 +1,33 @@
+import { BrowserRouter, Navigate, Routes, Route} from 'react-router-dom'
+import Login from '../../pages/Login';
+import Register from '../../pages/Register';
+import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { CssBaseline , ThemeProvider} from '@mui/material'
+import { createTheme} from '@mui/material/styles'
+import { themeSettings } from '../../theme';
+import Layout from '../../pages/Layout';
+
+function App() {
+
+  const mode = useSelector((state) => state.mode)
+  const theme = useMemo(() => createTheme(themeSettings(mode)), [mode])
+  
+  return (
+    <div className="app">
+  <BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <CssBaseline/>
+      <Routes>
+        <Route path='/' element={<Login/>}></Route>
+        <Route path="/register" element={<Register/>}></Route>
+        <Route path="/home" element={<Layout/>}></Route>
+      </Routes>
+    </ThemeProvider>
+  </BrowserRouter>
+
+    </div>
+  );
+}
+
+export default App;
