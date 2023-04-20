@@ -6,7 +6,7 @@ CREATE TABLE users (
     id UUID NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
     email VARCHAR UNIQUE NOT NULL,
     password VARCHAR NOT NULL,
-    access_level VARCHAR NOT NULL CHECK (accesslevel IN ('user', 'adm'))
+    access_level VARCHAR NOT NULL CHECK (access_level IN ('user', 'adm')) 
 );
 
 CREATE TABLE bases (

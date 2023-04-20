@@ -14,6 +14,7 @@ const verifyToken = async (request, response, next) => {
 
         const verified = jwt.verify(token, process.env.JWT_SECRET);
         request.user = verified;
+        console.log("verified" ,verified)
         next();
     } catch (err) {
         response.status(500).json({ error: err.message })

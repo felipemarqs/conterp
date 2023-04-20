@@ -4,7 +4,6 @@ import './index.css';
 import App from './components/App/index.jsx';
 import { PersistGate } from "redux-persist/integration/react";
 
-
 import {
   persistStore,
   persistReducer,
