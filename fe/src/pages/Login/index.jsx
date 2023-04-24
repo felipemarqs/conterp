@@ -8,8 +8,12 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import fundoConterp from "./fundo_conterp.png";
-import sondaMar from './sonda_mar.png'
+import { useNavigate } from "react-router-dom";
+
+import fundoConterp from "../../assets/fundo_conterp.png";
+import sonda from '../../assets/spt60.png'
+import sondaMar from '../../assets/sonda_mar.png'
+import logo from '../../assets/logo.png'
 
 import UsersServices from "../../services/UsersServices";
 
@@ -27,9 +31,6 @@ const Login = () => {
 
   const dispatch = useDispatch();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const user = useSelector((state) => state.user);
 
   const handleChangePageType = () => {
     setPageType((prevState) =>
@@ -40,7 +41,7 @@ const Login = () => {
   const loadUsers = useCallback(async () => {
     try {
       const users = await UsersServices.listUsers();
-      console.log("users", users);
+      console.log("List Users =>", users);
     } catch (error) {
       console.log("error", error);
     }
@@ -68,14 +69,36 @@ const Login = () => {
         <Box
         width="100%"
         height="40%"
+        display="flex"
+        flexDirection="column"
+        justifyContent="space-between"
           sx={{
-            backgroundImage: `url(${sondaMar})`,
+            backgroundImage: `url(${pageType === 'login' ? sondaMar : sonda})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             borderRadius:"1rem 1rem 0 0",
             clipPath: "polygon(0 0, 100% 0, 100% 70%, 0% 100%);"
           }}
-        ></Box>
+        >
+          <Box
+            width="100px"
+            height="100px"
+            sx={{
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "contain",
+              backgroundPosition: "center",
+              backgroundImage: `url(${logo})`
+            }}
+          >
+            
+          </Box>
+          <Box
+          height="30px"
+          width="100%"
+          backgroundColor={theme.palette.primary[500]}
+          >
+          </Box>
+        </Box>
         {pageType === "register" ? (
           <>
             <Typography variant="h1" fontWeight="500" color="#fff">

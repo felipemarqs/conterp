@@ -47,16 +47,18 @@ const Navbar = () => {
 
     const theme = useTheme()
 
-    const userName = `${user}`
-    console.log("theme => ",userName)
+    const userEmail = `${user?.email}`
+    console.log("theme => ",userEmail)
 
     const handleChangeMode = () => {
         dispatch(setMode())
     }
 
     const handleLogOut = () => {
+
         dispatch(setLogOut())
     }
+    
 
     return (
     <AppBar
@@ -97,13 +99,16 @@ const Navbar = () => {
                 gap: "1rem",
               }}
             >
+             
+             
+              
               <Box textAlign="left">
                 <Typography
                   fontWeight="bold"
                   fontSize="0.85rem"
                   sx={{ color: theme.palette.secondary[100] }}
                 >
-                  {user}
+                  {userEmail}
                 </Typography>
                 <Typography
                   fontSize="0.75rem"
@@ -115,6 +120,8 @@ const Navbar = () => {
               <ArrowDropDownOutlined
                 sx={{ color: theme.palette.secondary[300], fontSize: "25px" }}
               />
+              
+            
             </Button>
             <Menu
               anchorEl={anchorEl}

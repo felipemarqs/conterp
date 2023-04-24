@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Box,
@@ -17,7 +17,7 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setLogin, setMode } from "../../state/index";
 import FlexBetween from "../FlexBetween";
 import UsersServices from "../../services/UsersServices";
@@ -33,7 +33,7 @@ const loginSchema = yup.object().shape({
   password: yup.string().required("required"),
 });
 
-const initialValuesRegister = {
+const initialValues = {
   email: "",
   password: "",
   access_level: "",
@@ -49,7 +49,8 @@ const Form = ({ formType = "login" }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [accessLevel, setAccessLevel] = useState("");
-
+  const [isLoading, setIsLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
   //Tema
   const { palette } = useTheme();
   const isNonMobile = useMediaQuery("(min-width: 600px)");
@@ -59,34 +60,86 @@ const Form = ({ formType = "login" }) => {
 
   //Router
   const navigate = useNavigate();
-  const isLoginPage = formType === "login";
-  const isRegisterPage = formType === "register";
+  const [isLoginPage, setIsLoginPage] = useState(true)
+  const [isRegisterPage, setIsRegisterPage] = useState(false)
 
-  const register = async (values) => {
+
+  const register = async (values, onSubmitProps) => {
+    setIsLoading(true)
     try {
       const newUser = await UsersServices.createUser(values);
-      console.log("newUser", newUser);
+      onSubmitProps.resetForm();
+      setErrorMessage("")
+      dispatch(setLogin({
+        user: newUser.user,
+        token: newUser.token
+      }))
     } catch (error) {
       console.log("error", error.message);
+      setErrorMessage(error.message)
+    } finally {
+      setIsLoading(false)
     }
   };
 
-  const login = async (values) => {
+  const user  = useSelector((state) => state.user)
+  console.log("user", user)
+
+  const login = async (values, onSubmitProps) => {
+    setIsLoading(true)
     try {
+      const user = {
+        email: values.email,
+        password: values.password
+      }
+      const loggedUser = await UsersServices.loginUser(user)
+      onSubmitProps.resetForm();
+      dispatch(setLogin({
+        user: loggedUser.user,
+        token: loggedUser.token
+      }))
+      setErrorMessage("")
+      console.log("Usuário",loggedUser, "Logado com sucesso!")
     } catch (error) {
       console.log("error", error.message);
+      setErrorMessage(error.message)
+    } finally {
+      setIsLoading(false)
     }
   };
+
+
+  console.log(formType)
+
+  useEffect(() => {
+    
+    if (formType === 'login') {
+      setIsLoginPage(true)
+      setIsRegisterPage(false)
+      
+    }  
+
+    if (formType === 'register') {
+      setIsLoginPage(false)
+      setIsRegisterPage(true)
+     
+    }  
+
+  }, [formType])
+
+  
 
   const handleFormSubmit = async (values, onSubmitProps) => {
-    if (isRegisterPage) await register(values);
-    if (isLoginPage) await login(values);
+    if (isRegisterPage) await register(values, onSubmitProps);
+    if (isLoginPage) await login(values, onSubmitProps);
   };
+
+  
 
   return (
     <Formik
       onSubmit={handleFormSubmit}
-      initialValues={isLoginPage ? initialValuesLogin : initialValuesRegister}
+      initialValues={initialValues}
       validationSchema={isLoginPage ? loginSchema : registerSchema}
     >
       {({
@@ -114,14 +167,17 @@ const Form = ({ formType = "login" }) => {
                 onChange={handleChange}
                 value={values.email}
                 size="small"
-                
+                InputProps={{
+                  autoComplete: "off"
+                }}
                 name="email"
                 error={Boolean(touched.email) && Boolean(errors.email)}
                 helperText={touched.email && errors.email}
                 sx={{
                   borderRadius: "1rem",
                   outline: "none",
-                  backgroundColor: palette.primary[500],                
+                  border: "2px solid #fff",
+                  backgroundColor: palette.primary[500],            
                 }}
               />
 
@@ -136,9 +192,9 @@ const Form = ({ formType = "login" }) => {
                 error={Boolean(touched.password) && Boolean(errors.password)}
                 helperText={touched.password && errors.password}
                 sx={{
-                  border: "none",
                   borderRadius: "1rem",
                   outline: "none !important",
+                  border: "2px solid #fff",
                   backgroundColor: palette.primary[500],
                 }}
               />
@@ -172,20 +228,23 @@ const Form = ({ formType = "login" }) => {
                 </FormControl>
               </>
             )}
-            <Box>
+            <Box
+            >
               <Button
-                fullWidth
+                disabled={isLoading}
+                size="medium"
                 type="submit"
                 sx={{
-                  m: "2rem 0",
                   p: "1rem",
+                  width:"50%",
                   backgroundColor: palette.primary.main,
                   color: "#fff",
-                  "&:hover": { color: palette.primary.main },
+                  ":hover": { backgroundColor: palette.primary[700] },
                 }}
               >
                 {isLoginPage ? "LOGIN" : "REGISTER"}
               </Button>
+              {errorMessage && <Typography color={ palette.red[500]}>{errorMessage}</Typography>}
             </Box>
           </Box>
 
@@ -197,23 +256,3 @@ const Form = ({ formType = "login" }) => {
 };
 
 export default Form;
-
-/* 
-<TextField
-label="Nivel de Acesso"
-type="access_level"
-onBlur={handleBlur}
-onChange={handleChange}
-value={values.access_level}
-name="access_level"
-error={
-  Boolean(touched.access_level) &&
-  Boolean(errors.access_level)
-}
-helperText={touched.access_level && errors.access_level}
-sx={{
-  borderRadius: "1rem",
-  outline: "none",
-  backgroundColor: palette.primary[500],
-}}
-/> */

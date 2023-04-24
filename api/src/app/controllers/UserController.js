@@ -68,7 +68,13 @@ class UserController {
     if (newUser) {
       response
         .status(201)
-        .json({ id: newUser.id, token: generateToken(newUser.id) });
+        .json({
+          user: {
+            email: newUser.email,
+            access_level: newUser.access_level
+          },
+          token: generateToken(newUser.id)
+        });
     }
   }
 
@@ -152,7 +158,10 @@ class UserController {
     }
 
     response.status(201).json({
-      id: user.id,
+      user: {
+        email: user.email,
+        access_level: user.access_level
+      },
       token: generateToken(user.id),
     });
   }

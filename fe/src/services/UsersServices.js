@@ -25,6 +25,18 @@ class UsersServices {
       body: body,
     });
   }
+
+  async loginUser(user) {
+    console.log("user HHPT", user);
+    const body = {
+      email: user.email,
+      password: user.password,
+    };
+
+    return this.HttpClient.post(`/users/login`, {
+      body: body,
+    });
+  }
 }
 
 export default new UsersServices();

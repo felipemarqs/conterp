@@ -44,7 +44,7 @@ export const tokensDark = {
         800: "#344e26",
         900: "#1a2713"
     },
-    
+
 }
 
 
@@ -94,6 +94,9 @@ export const themeSettings = (mode) => {
                         default: tokensDark.grey[100],
                         alt: tokensDark.grey[500],
                     },
+                    red: {
+                        ...tokensDark.red
+                    }
                 }
                 : {
                     // palette values for light mode
@@ -115,6 +118,9 @@ export const themeSettings = (mode) => {
                         default: tokensDark.grey[100],
                         alt: tokensDark.grey[200],
                     },
+                    red: {
+                        ...tokensDark.red
+                    }
                 }),
         },
         typography: {
