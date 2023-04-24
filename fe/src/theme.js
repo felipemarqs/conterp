@@ -34,17 +34,19 @@ export const tokensDark = {
         900: "#321010"
     },
     secondary: {
-        100: "#dcf4e3",
-        200: "#b9eac7",
-        300: "#97dfab",
-        400: "#74d58f",
-        500: "#51ca73",
-        600: "#41a25c",
-        700: "#317945",
-        800: "#20512e",
-        900: "#102817"
-    }
+        100: "#e6f3df",
+        200: "#cde7bf",
+        300: "#b3dca0",
+        400: "#9ad080",
+        500: "#81c460",
+        600: "#679d4d",
+        700: "#4d763a",
+        800: "#344e26",
+        900: "#1a2713"
+    },
+    
 }
+
 
 // function that reverses the color palette
 function reverseTokens(tokensDark) {
@@ -89,8 +91,8 @@ export const themeSettings = (mode) => {
                         main: tokensDark.grey[500],
                     },
                     background: {
-                        default: tokensDark.primary[600],
-                        alt: tokensDark.primary[500],
+                        default: tokensDark.grey[100],
+                        alt: tokensDark.grey[500],
                     },
                 }
                 : {
