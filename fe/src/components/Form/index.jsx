@@ -13,6 +13,8 @@ import {
   FormControl,
 } from "@mui/material";
 
+import {ToastContainer, toast} from 'react-toastify'
+
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -76,7 +78,9 @@ const Form = ({ formType = "login" }) => {
       }))
     } catch (error) {
       console.log("error", error.message);
+      
       setErrorMessage(error.message)
+      
     } finally {
       setIsLoading(false)
     }
@@ -103,13 +107,16 @@ const Form = ({ formType = "login" }) => {
     } catch (error) {
       console.log("error", error.message);
       setErrorMessage(error.message)
+     
     } finally {
       setIsLoading(false)
     }
   };
 
 
-  console.log(formType)
+  useEffect(() => {
+    setErrorMessage("")
+  }, [formType])
 
   useEffect(() => {
     
@@ -244,10 +251,22 @@ const Form = ({ formType = "login" }) => {
               >
                 {isLoginPage ? "LOGIN" : "REGISTER"}
               </Button>
-              {errorMessage && <Typography color={ palette.red[500]}>{errorMessage}</Typography>}
+              {errorMessage && (
+                <Box
+                  padding="1rem .2rem"
+                  borderRadius=".5rem"
+                  backgroundColor={palette.red[500]}
+                  color="#fff"
+                  width="45%"
+                  margin="2rem auto"
+                >
+                  <Typography fontWeight="bold">{errorMessage}</Typography>
+                </Box>
+              )}
             </Box>
-          </Box>
 
+
+          </Box>
           {/* BUTTONS */}
         </form>
       )}

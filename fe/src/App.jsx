@@ -8,6 +8,7 @@ import { createTheme } from "@mui/material/styles";
 import { themeSettings } from "./theme";
 import Layout from "./pages/Layout";
 import { useAuth } from "./hooks/useAuth";
+import {ToastContainer}  from 'react-toastify'
 
 function App() {
   const mode = useSelector((state) => state.mode);
@@ -27,6 +28,8 @@ function App() {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Routes>
+          
+
             <Route path="/" element={<Navigate to="/login" replace/>}/>
             <Route path="/login" element={auth ? <Navigate to="/home"/> : <Login /> }></Route>
             <Route path="/register" element={<Register />}></Route>
@@ -34,8 +37,10 @@ function App() {
               
             </Route>
           </Routes>
+          
         </ThemeProvider>
       </BrowserRouter>
+      
     </div>
   );
 }

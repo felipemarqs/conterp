@@ -1,26 +1,26 @@
+//MUI
 import {
   Typography,
-  TextField,
-  Button,
   Box,
   useMediaQuery,
+  useTheme
 } from "@mui/material";
+
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { useNavigate } from "react-router-dom";
+//React Router
+import { useNavigate , useLocation} from "react-router-dom";
 
+//Assets
 import fundoConterp from "../../assets/fundo_conterp.png";
 import sonda from '../../assets/spt60.png'
 import sondaMar from '../../assets/sonda_mar.png'
 import logo from '../../assets/logo.png'
 
-import UsersServices from "../../services/UsersServices";
 
-import { setMode } from "../../state";
-import FlexBetween from "../../components/FlexBetween";
-import { useTheme } from "@mui/material";
 
+//Components
 import Form from "../../components/Form";
 
 const Login = () => {
@@ -29,33 +29,16 @@ const Login = () => {
 
   const [pageType, setPageType] = useState("login");
 
-  const dispatch = useDispatch();
-
-
   const handleChangePageType = () => {
     setPageType((prevState) =>
       prevState === "register" ? "login" : "register"
     );
   };
 
-  const loadUsers = useCallback(async () => {
-    try {
-      const users = await UsersServices.listUsers();
-      console.log("List Users =>", users);
-    } catch (error) {
-      console.log("error", error);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadUsers();
-  }, []);
-
   return (
     <Box
       width="100%"
       height="100%"
-      /*  backgroundColor={theme.palette.background.alt} */
       p="1rem 6%"
       textAlign="center"
     >

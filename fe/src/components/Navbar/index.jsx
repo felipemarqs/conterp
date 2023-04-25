@@ -32,7 +32,10 @@ import {
   import logo_dark from '../../assets/logo_dark.png'
 
 
-const Navbar = () => {
+const Navbar = ({
+  isSidebarOpen,
+  setIsSidebarOpen
+}) => {
 
     const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
     const dispatch = useDispatch()
@@ -48,14 +51,13 @@ const Navbar = () => {
     const theme = useTheme()
 
     const userEmail = `${user?.email}`
-    console.log("theme => ",userEmail)
+    
 
     const handleChangeMode = () => {
         dispatch(setMode())
     }
 
     const handleLogOut = () => {
-
         dispatch(setLogOut())
     }
     
@@ -72,7 +74,7 @@ const Navbar = () => {
         <Toolbar sx={{justifyContent: "space-between"}}>
             {/* LEFT SIDE */}
             <FlexBetween>
-                <IconButton onClick={()=> console.log("open/close sidebar")}>
+                <IconButton onClick={()=> setIsSidebarOpen(!isSidebarOpen)}>
                     <MenuIcon/>
                 </IconButton>
             </FlexBetween>
