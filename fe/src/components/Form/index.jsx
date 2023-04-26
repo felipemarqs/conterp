@@ -168,6 +168,29 @@ const Form = ({ formType = "login" }) => {
           }}
           >
             <>
+              {isRegisterPage && (
+                <>
+                <TextField
+                label="Email"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.email}
+                size="small"
+                InputProps={{
+                  autoComplete: "off"
+                }}
+                name="email"
+                error={Boolean(touched.email) && Boolean(errors.email)}
+                helperText={touched.email && errors.email}
+                sx={{
+                  borderRadius: "1rem",
+                  outline: "none",
+                  border: "2px solid #fff",
+                  backgroundColor: palette.primary[500],            
+                }}
+              />
+                </>
+              )}
               <TextField
                 label="Email"
                 onBlur={handleBlur}
@@ -205,6 +228,7 @@ const Form = ({ formType = "login" }) => {
                   backgroundColor: palette.primary[500],
                 }}
               />
+              
             </>
 
             {isRegisterPage && (
@@ -224,6 +248,7 @@ const Form = ({ formType = "login" }) => {
                       Boolean(errors.access_level)
                     }
                     sx={{
+                      padding: ".5rem",
                       borderRadius: "1rem",
                       outline: "none",
                       backgroundColor: palette.primary[500],

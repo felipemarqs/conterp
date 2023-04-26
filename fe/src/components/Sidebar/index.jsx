@@ -35,65 +35,11 @@ import logo from '../../assets/logo_dark.png'
 
 import { useLocation, useNavigate } from "react-router-dom";
 import FlexBetween from "../FlexBetween";
+import { useAuth } from "../../hooks/useAuth";
 
-const navItems = [
-    {
-      text: "Dashboard",
-      icon: <HomeOutlined />,
-    },
-    {
-      text: "Client Facing",
-      icon: null,
-    },
-    {
-      text: "Products",
-      icon: <ShoppingCartOutlined />,
-    },
-    {
-      text: "Customers",
-      icon: <Groups2Outlined />,
-    },
-    {
-      text: "Transactions",
-      icon: <ReceiptLongOutlined />,
-    },
-    {
-      text: "Geography",
-      icon: <PublicOutlined />,
-    },
-    {
-      text: "Sales",
-      icon: null,
-    },
-    {
-      text: "Overview",
-      icon: <PointOfSaleOutlined />,
-    },
-    {
-      text: "Daily",
-      icon: <TodayOutlined />,
-    },
-    {
-      text: "Monthly",
-      icon: <CalendarMonthOutlined />,
-    },
-    {
-      text: "Breakdown",
-      icon: <PieChartOutlined />,
-    },
-    {
-      text: "Management",
-      icon: null,
-    },
-    {
-      text: "Admin",
-      icon: <AdminPanelSettingsOutlined />,
-    },
-    {
-      text: "Performance",
-      icon: <TrendingUpOutlined />,
-    },
-  ];
+
+
+
 
 const Sidebar = ({
     isNonMobile,
@@ -102,13 +48,92 @@ const Sidebar = ({
     setIsSidebarOpen,
 }) => {
     const {pathname} = useLocation()
-    const [active, setActive] = useState("")
+    const [active, setActive] = useState("home")
     const navigate = useNavigate()
     const theme = useTheme();
 
-    useEffect(() => {
+    const {isUserAdm} = useAuth()
+
+    const navItems = isUserAdm ? [
+      {
+        text: "Home",
+        icon: <HomeOutlined />,
+      },
+      {
+        text: "Management",
+        icon: null,
+      },
+      {
+        text: "Admin",
+        icon: <AdminPanelSettingsOutlined />,
+      },
+      {
+        text: "Performance",
+        icon: <TrendingUpOutlined />,
+      },
+      {
+        text: "Sub Menu 1",
+        icon: null,
+      },
+      {
+        text: "Sonda",
+        icon: <ShoppingCartOutlined />,
+      },
+      {
+        text: "Customers",
+        icon: <Groups2Outlined />,
+      },
+      {
+        text: "Sub Menu 2",
+        icon: null,
+      },
+      {
+        text: "Overview",
+        icon: <PointOfSaleOutlined />,
+      },
+      {
+        text: "Daily",
+        icon: <TodayOutlined />,
+      }   
+    ] : [
+      {
+        text: "Home",
+        icon: <HomeOutlined />,
+      },
+      {
+        text: "Sub Menu 1",
+        icon: null,
+      },
+      {
+        text: "Sonda",
+        icon: <ShoppingCartOutlined />,
+      },
+      {
+        text: "Customers",
+        icon: <Groups2Outlined />,
+      },
+      {
+        text: "Sub Menu 2",
+        icon: null,
+      },
+      {
+        text: "Overview",
+        icon: <PointOfSaleOutlined />,
+      },
+      {
+        text: "Daily",
+        icon: <TodayOutlined />,
+      }   
+    ] 
+
+    const handleToggleMenuItem = (lowerCaseText) => {
+      navigate(`/user/${lowerCaseText}`)
+      setActive(lowerCaseText)
+    }
+
+   /*  useEffect(() => {
         setActive(pathname.substring(1))
-    }, [pathname])
+    }, [pathname]) */
 
     return (
     <Box component="nav">
@@ -119,7 +144,7 @@ const Sidebar = ({
                 variant="persistent"
                 anchor="left"
                 sx={{
-                    idth: drawerWidth,
+                    width: drawerWidth,
                     "& .MuiDrawer-paper": {
                     color: theme.palette.secondary[200],
                     backgroundColor: theme.palette.background.alt,
@@ -155,13 +180,9 @@ const Sidebar = ({
                                 return (
                                     <ListItem key={text} disablePadding>
                                         <ListItemButton 
-                                            onClick={() => { 
-                                                navigate(`/${lcText}`)
-                                                setActive(lcText)
-                                            }}
+                                            onClick={() => handleToggleMenuItem(lcText)}
                                             sx={{backgroundColor: active === lcText ? theme.palette.secondary[300] : "transparent",
                                             color: active === lcText ? theme.palette.primary[600] : theme.palette.secondary[100] }}
-
                                         >
                                             <ListItemIcon
                                                 sx={{

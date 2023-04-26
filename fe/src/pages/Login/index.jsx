@@ -44,14 +44,14 @@ const Login = () => {
     >
       <Box
         width={isNonMobileScreens ? "50%" : "93%"}
-        height="90%"
+        
         m="2rem auto"
         borderRadius="1.5rem"
         backgroundColor={theme.palette.secondary[500]}
       >
         <Box
         width="100%"
-        height="40%"
+        height="300px"
         display="flex"
         flexDirection="column"
         justifyContent="space-between"

@@ -51,7 +51,9 @@ const Navbar = ({
     const theme = useTheme()
 
     const userEmail = `${user?.email}`
+    const userAccess = user?.access_level === 'adm' ? 'Administrador' : 'Usuário'
     
+    console.log("Object User in Store =>" , user)
 
     const handleChangeMode = () => {
         dispatch(setMode())
@@ -66,7 +68,7 @@ const Navbar = ({
     <AppBar
         sx={{
             position: "static",
-            background: "none",
+            //background: "none",
             boxShadow: "none"
         }}
     >
@@ -116,7 +118,7 @@ const Navbar = ({
                   fontSize="0.75rem"
                   sx={{ color: theme.palette.secondary[200] }}
                 >
-                  SPT 60
+                  {userAccess}
                 </Typography>
               </Box>
               <ArrowDropDownOutlined
