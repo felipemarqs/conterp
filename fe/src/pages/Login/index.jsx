@@ -21,7 +21,7 @@ import logo from '../../assets/logo.png'
 
 
 //Components
-import Form from "../../components/Form";
+import Form from "../../components/AuthForm";
 
 const Login = () => {
   const theme = useTheme();

@@ -33,7 +33,11 @@ class UserController {
 
   //Create a user
   async store(request, response) {
-    const { email, password, access_level } = request.body;
+    const { name, email, password, access_level, sonda_id } = request.body;
+
+    if (!name) {
+      return response.status(400).json({ error: "Nome é obrigatório!" });
+    }
 
     if (!email) {
       return response.status(400).json({ error: "Email é obrigatório!" });
@@ -59,21 +63,28 @@ class UserController {
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
     const newUser = await UsersRepositories.create({
+      name,
       email,
       password_hash: passwordHash,
       access_level,
+      sonda_id
     });
 
     //Se cadastrado com sucesso retornar o Token
     if (newUser) {
+
+      const user = await UsersRepositories.findByEmail(email);
       response
         .status(201)
         .json({
           user: {
-            email: newUser.email,
-            access_level: newUser.access_level
+            name: user.name,
+            email: user.email,
+            access_level: user.access_level,
+            sonda_name: user.sonda_name,
+
           },
-          token: generateToken(newUser.id)
+          token: generateToken(user.id)
         });
     }
   }
@@ -82,10 +93,14 @@ class UserController {
   async update(request, response) {
     const { id } = request.params;
 
-    const { email, password, access_level } = request.body;
+    const { name, email, password, access_level, sonda_id } = request.body;
 
     //Verifica se existe um usuário com ID
     const userIdExists = await UsersRepositories.findById(id);
+
+    if (!name) {
+      return response.status(400).json({ error: "Nome é obrigatório!" });
+    }
 
     if (!userIdExists) {
       return response.status(404).json({ error: "Usuário não encontrado." });
@@ -116,9 +131,11 @@ class UserController {
     const passwordHash = await bcrypt.hash(password, salt);
 
     const updatedUser = await UsersRepositories.update(id, {
+      name,
       email,
       passwordHash,
       access_level,
+      sonda_id
     });
 
     response.json(updatedUser);
@@ -159,10 +176,12 @@ class UserController {
 
     response.status(201).json({
       user: {
+        name: user.name,
         email: user.email,
-        access_level: user.access_level
+        access_level: user.access_level,
+        sonda_name: user.sonda_name,
       },
-      token: generateToken(user.id),
+      token: generateToken(user.id)
     });
   }
 }

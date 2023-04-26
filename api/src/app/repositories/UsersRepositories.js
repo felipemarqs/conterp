@@ -4,7 +4,12 @@ class UsersRepositories {
     async findAll(orderBy = 'ASC') {
 
         const direction = orderBy.toUpperCase() === "DESC" ? "DESC" : 'ASC'
-        const rows = await db.query(`SELECT * FROM users ORDER BY email ${direction}`)
+        const rows = await db.query(`
+            SELECT users.* , sondas.name AS sonda_name
+            FROM users
+            LEFT JOIN sondas ON sondas.id = users.sonda_id
+            ORDER BY users.name ${direction}
+            `)
         return rows
     }
 
@@ -14,27 +19,31 @@ class UsersRepositories {
     }
 
     async findByEmail(email) {
-        const [row] = await db.query('SELECT * FROM users WHERE email = $1', [email])
+        const [row] = await db.query(`
+            SELECT users.* , sondas.name AS sonda_name 
+            FROM users
+            LEFT JOIN sondas ON sondas.id = users.sonda_id
+            WHERE email = $1`, [email])
         return row
     }
 
-    async create({ email, password_hash, access_level }) {
+    async create({ name, email, password_hash, access_level, sonda_id }) {
         const [row] = await db.query(
-            `INSERT INTO users(email, password, access_level)
-            VALUES($1,$2,$3)
+            `INSERT INTO users(name ,email, password, access_level, sonda_id)
+            VALUES($1,$2,$3,$4,$5)
             RETURNING *
-            `, [email, password_hash, access_level])
+            `, [name, email, password_hash, access_level, sonda_id])
 
         return row;
     }
 
-    async update(id, { email, passwordHash, access_level }) {
+    async update(id, { name, email, passwordHash, access_level, sonda_id }) {
         const [row] = await db.query(`
         UPDATE users
-        SET email = $1, password = $2, access_level = $3 
-        WHERE id = $4
+        SET name = $1, email = $2, password = $3, access_level = $4 sonda_id = $5
+        WHERE id = $6
         RETURNING *
-       `, [email, passwordHash, access_level, id])
+       `, [name, email, passwordHash, access_level, sonda_id, id])
         return row
     }
 

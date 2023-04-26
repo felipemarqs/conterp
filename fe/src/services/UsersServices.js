@@ -16,9 +16,11 @@ class UsersServices {
   async createUser(user) {
     console.log("user HHPT", user);
     const body = {
+      name: user.name,
       email: user.email,
       password: user.password,
       access_level: user.access_level,
+      sonda_id: user.sonda_id
     };
 
     return this.HttpClient.post(`/users`, {

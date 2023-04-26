@@ -40,7 +40,7 @@ const Navbar = ({
     const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const user = useSelector((state) => state.user)
+    const userState = useSelector((state) => state.user)
     const [anchorEl, setAnchorEl] = useState(null);
     const isOpen = Boolean(anchorEl);
     const handleClick = (event) => setAnchorEl(event.currentTarget);
@@ -50,8 +50,7 @@ const Navbar = ({
 
     const theme = useTheme()
 
-    const userEmail = `${user?.email}`
-    const userAccess = user?.access_level === 'adm' ? 'Administrador' : 'Usuário'
+    const user = userState ? userState : {}
     
     console.log("Object User in Store =>" , user)
 
@@ -112,13 +111,13 @@ const Navbar = ({
                   fontSize="0.85rem"
                   sx={{ color: theme.palette.secondary[100] }}
                 >
-                  {userEmail}
+                  {user.name}
                 </Typography>
                 <Typography
                   fontSize="0.75rem"
                   sx={{ color: theme.palette.secondary[200] }}
                 >
-                  {userAccess}
+                  {user.sonda_name}
                 </Typography>
               </Box>
               <ArrowDropDownOutlined

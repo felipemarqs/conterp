@@ -1,7 +1,7 @@
 const { Router } = require('express')
 
 const UserController = require('./app/controllers/UserController')
-const BaseController = require('./app/controllers/BaseController');
+const SondaController = require('./app/controllers/SondaController');
 const verifyToken = require('./app/middlewares/verifyToken');
 
 const router = Router();
@@ -15,11 +15,11 @@ router.post('/users/login', UserController.login)
 router.put('/users/:id', UserController.update)
 
 // Base Routes
-router.get('/bases', BaseController.index)
-router.get('/bases/:id', BaseController.show)
-router.post('/bases', BaseController.store)
-router.put('/bases/:id', BaseController.update)
-router.delete('/bases/:id', BaseController.delete)
+router.get('/sondas', SondaController.index)
+router.get('/sondas/:id', SondaController.show)
+router.post('/sondas', SondaController.store)
+router.put('/sondas/:id', SondaController.update)
+router.delete('/sondas/:id', SondaController.delete)
 
 
 

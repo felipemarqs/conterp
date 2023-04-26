@@ -16,18 +16,21 @@ import {
 import {ToastContainer, toast} from 'react-toastify'
 
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import { Formik } from "formik";
+import { Formik, yupToFormErrors } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setLogin, setMode } from "../../state/index";
 import FlexBetween from "../FlexBetween";
 import UsersServices from "../../services/UsersServices";
+import SondasServices from '../../services/SondasServices'
 
 const registerSchema = yup.object().shape({
+  name: yup.string().required("Obrigatório"),
   email: yup.string().email("Email Inválido!").required("Obrigatório"),
   password: yup.string().required("Obrigatório"),
   access_level: yup.string().required("Obrigatório"),
+  sonda_id: yup.string()
 });
 
 const loginSchema = yup.object().shape({
@@ -36,9 +39,11 @@ const loginSchema = yup.object().shape({
 });
 
 const initialValues = {
+  name: "",
   email: "",
   password: "",
   access_level: "",
+  sonda_id: ""
 };
 
 const initialValuesLogin = {
@@ -53,6 +58,11 @@ const Form = ({ formType = "login" }) => {
   const [accessLevel, setAccessLevel] = useState("");
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
+  const [isLoginPage, setIsLoginPage] = useState(true)
+  const [isRegisterPage, setIsRegisterPage] = useState(false)
+  const [isLoadingSondas, setIsLoadingSondas] = useState(true)
+  const [sondas, setSondas] = useState([])
+
   //Tema
   const { palette } = useTheme();
   const isNonMobile = useMediaQuery("(min-width: 600px)");
@@ -62,8 +72,25 @@ const Form = ({ formType = "login" }) => {
 
   //Router
   const navigate = useNavigate();
-  const [isLoginPage, setIsLoginPage] = useState(true)
-  const [isRegisterPage, setIsRegisterPage] = useState(false)
+
+  console.log("Sondas Antes do User effect==>",sondas)
+  
+  useEffect(() => {
+    const loadSondas = async () => {
+      try {
+        const sondas = await SondasServices.listSondas();
+        setSondas(sondas)
+        console.log("Sondas ===>", sondas)
+      } catch(error) {
+        setErrorMessage("Erro ao carregar as sondas!")
+        console.log(error)
+      } finally {
+        setIsLoadingSondas(false)
+      }
+    }
+
+    loadSondas();
+  }, [setSondas, setIsLoadingSondas])
 
 
   const register = async (values, onSubmitProps) => {
@@ -113,13 +140,9 @@ const Form = ({ formType = "login" }) => {
     }
   };
 
-
-  useEffect(() => {
-    setErrorMessage("")
-  }, [formType])
-
   useEffect(() => {
     
+    setErrorMessage("")
     if (formType === 'login') {
       setIsLoginPage(true)
       setIsRegisterPage(false)
@@ -137,6 +160,9 @@ const Form = ({ formType = "login" }) => {
   
 
   const handleFormSubmit = async (values, onSubmitProps) => {
+
+    console.log(values)
+   
     if (isRegisterPage) await register(values, onSubmitProps);
     if (isLoginPage) await login(values, onSubmitProps);
   };
@@ -171,17 +197,17 @@ const Form = ({ formType = "login" }) => {
               {isRegisterPage && (
                 <>
                 <TextField
-                label="Email"
+                label="Name"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.email}
+                value={values.name}
                 size="small"
                 InputProps={{
                   autoComplete: "off"
                 }}
-                name="email"
-                error={Boolean(touched.email) && Boolean(errors.email)}
-                helperText={touched.email && errors.email}
+                name="name"
+                error={Boolean(touched.name) && Boolean(errors.name)}
+                helperText={touched.name && errors.name}
                 sx={{
                   borderRadius: "1rem",
                   outline: "none",
@@ -232,8 +258,19 @@ const Form = ({ formType = "login" }) => {
             </>
 
             {isRegisterPage && (
-              <>
-                <FormControl>
+              <Box
+                height="100%"
+                width="100%"
+                display="flex"
+                gap="1rem"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <FormControl
+                  sx={{
+                    width: "100%"
+                  }}
+                >
                   <InputLabel id="access-label">Nível de acesso</InputLabel>
                   <Select
                     labelId="access-label"
@@ -257,8 +294,38 @@ const Form = ({ formType = "login" }) => {
                     <MenuItem value="adm">Administrador</MenuItem>
                     <MenuItem value="user">Usuário</MenuItem>
                   </Select>
-                </FormControl>
-              </>
+                  </FormControl>
+                  <FormControl
+                    sx={{
+                      width: "100%"
+                    }}
+                  >
+                  <InputLabel id="sonda-label">Sonda</InputLabel> 
+                  <Select
+                    labelId="sonda-label"
+                    label="Sonda"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.sonda_id}
+                    name="sonda_id"
+                    size="small"
+                    error={
+                      Boolean(touched.sonda_id) &&
+                      Boolean(errors.sonda_id)
+                    }
+                    sx={{
+                      padding: ".5rem",
+                      borderRadius: "1rem",
+                      outline: "none",
+                      backgroundColor: palette.primary[500],
+                    }}
+                  >
+                    {sondas.map(({id,name}) => (
+                      <MenuItem value={id} key={id}>{name}</MenuItem>
+                    ))}
+                  </Select>
+                  </FormControl>
+              </Box>
             )}
             <Box
             >
