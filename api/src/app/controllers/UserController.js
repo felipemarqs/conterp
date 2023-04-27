@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const jwtSecret = process.env.JWT_SECRET;
 const UsersRepositories = require("../repositories/UsersRepositories");
+const RigsRepositories = require("../repositories/RigsRepositories");
 
 const generateToken = (id) => {
   return jwt.sign({ id }, jwtSecret, {
@@ -33,7 +34,7 @@ class UserController {
 
   //Create a user
   async store(request, response) {
-    const { name, email, password, access_level, sonda_id } = request.body;
+    const { name, email, password, access_level, rig_id } = request.body;
 
     if (!name) {
       return response.status(400).json({ error: "Nome é obrigatório!" });
@@ -59,6 +60,12 @@ class UserController {
       return response.status(400).json({ error: "Email já cadastrado!" });
     }
 
+    const rigExists = await RigsRepositories.findById(rig_id)
+
+    if (!rigExists) {
+      return response.status(400).json({ error: "Sonda não encontrada!" });
+    }
+
     //Gerar hash da senha
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
@@ -67,7 +74,7 @@ class UserController {
       email,
       password_hash: passwordHash,
       access_level,
-      sonda_id
+      rig_id
     });
 
     //Se cadastrado com sucesso retornar o Token
@@ -81,7 +88,7 @@ class UserController {
             name: user.name,
             email: user.email,
             access_level: user.access_level,
-            sonda_name: user.sonda_name,
+            rig_name: user.rig_name,
 
           },
           token: generateToken(user.id)
@@ -93,7 +100,7 @@ class UserController {
   async update(request, response) {
     const { id } = request.params;
 
-    const { name, email, password, access_level, sonda_id } = request.body;
+    const { name, email, password, access_level, rig_id } = request.body;
 
     //Verifica se existe um usuário com ID
     const userIdExists = await UsersRepositories.findById(id);
@@ -127,6 +134,12 @@ class UserController {
       return response.status(400).json({ error: "Email já cadastrado!" });
     }
 
+    const rigExists = await RigsRepositories.findById(rig_id)
+
+    if (!rigExists) {
+      return response.status(400).json({ error: "Sonda não encontrada!" });
+    }
+
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
 
@@ -135,7 +148,7 @@ class UserController {
       email,
       passwordHash,
       access_level,
-      sonda_id
+      rig_id
     });
 
     response.json(updatedUser);
@@ -179,7 +192,7 @@ class UserController {
         name: user.name,
         email: user.email,
         access_level: user.access_level,
-        sonda_name: user.sonda_name,
+        rig_name: user.rig_name,
       },
       token: generateToken(user.id)
     });

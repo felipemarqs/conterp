@@ -5,9 +5,9 @@ class UsersRepositories {
 
         const direction = orderBy.toUpperCase() === "DESC" ? "DESC" : 'ASC'
         const rows = await db.query(`
-            SELECT users.* , sondas.name AS sonda_name
+            SELECT users.* , rigs.name AS rig_name
             FROM users
-            LEFT JOIN sondas ON sondas.id = users.sonda_id
+            LEFT JOIN rigs ON rigs.id = users.rig_id
             ORDER BY users.name ${direction}
             `)
         return rows
@@ -20,30 +20,30 @@ class UsersRepositories {
 
     async findByEmail(email) {
         const [row] = await db.query(`
-            SELECT users.* , sondas.name AS sonda_name 
+            SELECT users.* , rigs.name AS rig_name 
             FROM users
-            LEFT JOIN sondas ON sondas.id = users.sonda_id
+            LEFT JOIN rigs ON rigs.id = users.rig_id
             WHERE email = $1`, [email])
         return row
     }
 
-    async create({ name, email, password_hash, access_level, sonda_id }) {
+    async create({ name, email, password_hash, access_level, rig_id }) {
         const [row] = await db.query(
-            `INSERT INTO users(name ,email, password, access_level, sonda_id)
+            `INSERT INTO users(name ,email, password, access_level, rig_id)
             VALUES($1,$2,$3,$4,$5)
             RETURNING *
-            `, [name, email, password_hash, access_level, sonda_id])
+            `, [name, email, password_hash, access_level, rig_id])
 
         return row;
     }
 
-    async update(id, { name, email, passwordHash, access_level, sonda_id }) {
+    async update(id, { name, email, passwordHash, access_level, rig_id }) {
         const [row] = await db.query(`
         UPDATE users
-        SET name = $1, email = $2, password = $3, access_level = $4 sonda_id = $5
+        SET name = $1, email = $2, password = $3, access_level = $4 rig_id = $5
         WHERE id = $6
         RETURNING *
-       `, [name, email, passwordHash, access_level, sonda_id, id])
+       `, [name, email, passwordHash, access_level, rig_id, id])
         return row
     }
 

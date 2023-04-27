@@ -1,97 +1,91 @@
 import { useState } from "react";
 import {
-    Box,
-    IconButton,
-    InputBase,
-    Typography,
-    Select,
-    Menu,
-    MenuItem,
-    FormControl,
-    useTheme,
-    useMediaQuery,
-    AppBar,
-    Toolbar,
-    Button
-  } from "@mui/material";
-  import {
-    Search,
-    Message,
-    DarkModeOutlined,
-    LightModeOutlined,
-    Notifications,
-    Help,
-    Close,
-    ArrowDropDownOutlined,
-    Menu as MenuIcon
-  } from "@mui/icons-material";
-  import { useDispatch, useSelector } from "react-redux";
-  import { setMode, setLogOut } from "../../state/index";
-  import { useNavigate } from "react-router-dom";
-  import FlexBetween from "../FlexBetween";
-  import logo_dark from '../../assets/logo_dark.png'
+  Box,
+  IconButton,
+  InputBase,
+  Typography,
+  Select,
+  Menu,
+  MenuItem,
+  FormControl,
+  useTheme,
+  useMediaQuery,
+  AppBar,
+  Toolbar,
+  Button,
+} from "@mui/material";
+import {
+  Search,
+  Message,
+  DarkModeOutlined,
+  LightModeOutlined,
+  Notifications,
+  Help,
+  Close,
+  ArrowDropDownOutlined,
+  Menu as MenuIcon,
+} from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import { setMode, setLogOut } from "../../state/index";
+import { useNavigate } from "react-router-dom";
+import FlexBetween from "../FlexBetween";
+import logo_dark from "../../assets/logo_dark.png";
 
+const Navbar = ({ isSidebarOpen, setIsSidebarOpen }) => {
+  const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const userState = useSelector((state) => state.user);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const isOpen = Boolean(anchorEl);
+  const handleClick = (event) => setAnchorEl(event.currentTarget);
+  const handleClose = () => setAnchorEl(null);
 
-const Navbar = ({
-  isSidebarOpen,
-  setIsSidebarOpen
-}) => {
+  const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
 
-    const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
-    const userState = useSelector((state) => state.user)
-    const [anchorEl, setAnchorEl] = useState(null);
-    const isOpen = Boolean(anchorEl);
-    const handleClick = (event) => setAnchorEl(event.currentTarget);
-    const handleClose = () => setAnchorEl(null);
+  const theme = useTheme();
 
-    const isNonMobileScreens = useMediaQuery("(min-width: 1000px)")
+  const user = userState ? userState : {};
 
-    const theme = useTheme()
+  console.log("Object User in Store =>", user);
 
-    const user = userState ? userState : {}
-    
-    console.log("Object User in Store =>" , user)
+  const handleChangeMode = () => {
+    dispatch(setMode());
+  };
 
-    const handleChangeMode = () => {
-        dispatch(setMode())
-    }
+  const handleLogOut = () => {
+    dispatch(setLogOut());
+  };
 
-    const handleLogOut = () => {
-        dispatch(setLogOut())
-    }
-    
-
-    return (
+  return (
     <AppBar
-        sx={{
-            position: "static",
-            //background: "none",
-            boxShadow: "none"
-        }}
+      sx={{
+        position: "static",
+        //background: "none",
+        boxShadow: "none",
+      }}
     >
-        <FlexBetween>
-        <Toolbar sx={{justifyContent: "space-between"}}>
-            {/* LEFT SIDE */}
-            <FlexBetween>
-                <IconButton onClick={()=> setIsSidebarOpen(!isSidebarOpen)}>
-                    <MenuIcon/>
-                </IconButton>
-            </FlexBetween>
+      <FlexBetween>
+        <Toolbar sx={{ justifyContent: "space-between" }}>
+          {/* LEFT SIDE */}
+          <FlexBetween>
+            <IconButton onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+              <MenuIcon />
+            </IconButton>
+          </FlexBetween>
         </Toolbar>
 
         {/* RIGHT SIDE */}
         <FlexBetween gap="1.5rem" padding="1rem">
-            <IconButton onClick={handleChangeMode}>
-                {theme.palette.mode === 'dark' ?
-                    <LightModeOutlined sx={{fontSize:"25px"}}/>
-                    :
-                    <DarkModeOutlined sx={{fontSize:"25px"}}/>
-                }
-            </IconButton>
+          <IconButton onClick={handleChangeMode}>
+            {theme.palette.mode === "dark" ? (
+              <LightModeOutlined sx={{ fontSize: "25px" }} />
+            ) : (
+              <DarkModeOutlined sx={{ fontSize: "25px" }} />
+            )}
+          </IconButton>
 
-            <FlexBetween>
+          <FlexBetween>
             <Button
               onClick={handleClick}
               sx={{
@@ -102,9 +96,6 @@ const Navbar = ({
                 gap: "1rem",
               }}
             >
-             
-             
-              
               <Box textAlign="left">
                 <Typography
                   fontWeight="bold"
@@ -117,14 +108,12 @@ const Navbar = ({
                   fontSize="0.75rem"
                   sx={{ color: theme.palette.secondary[200] }}
                 >
-                  {user.sonda_name}
+                  {user.rig_name}
                 </Typography>
               </Box>
               <ArrowDropDownOutlined
                 sx={{ color: theme.palette.secondary[300], fontSize: "25px" }}
               />
-              
-            
             </Button>
             <Menu
               anchorEl={anchorEl}
@@ -135,13 +124,10 @@ const Navbar = ({
               <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
             </Menu>
           </FlexBetween>
-
         </FlexBetween>
-
-        </FlexBetween>
-
+      </FlexBetween>
     </AppBar>
-    )
-}
+  );
+};
 
 export default Navbar;

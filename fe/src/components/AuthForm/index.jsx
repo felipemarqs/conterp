@@ -13,8 +13,6 @@ import {
   FormControl,
 } from "@mui/material";
 
-import { ToastContainer, toast } from "react-toastify";
-
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { Formik, yupToFormErrors } from "formik";
 import * as yup from "yup";
@@ -23,7 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLogin, setMode } from "../../state/index";
 import FlexBetween from "../FlexBetween";
 import UsersServices from "../../services/UsersServices";
-import SondasServices from "../../services/SondasServices";
+import RigsServices from "../../services/RigsServices";
 import { FormContainer, RegisterSelectContainer } from "./styles.jsx";
 
 const registerSchema = yup.object().shape({
@@ -31,7 +29,7 @@ const registerSchema = yup.object().shape({
   email: yup.string().email("Email Inválido!").required("Obrigatório"),
   password: yup.string().required("Obrigatório"),
   access_level: yup.string().required("Obrigatório"),
-  sonda_id: yup.string(),
+  rig_id: yup.string(),
 });
 
 const loginSchema = yup.object().shape({
@@ -44,7 +42,7 @@ const initialValues = {
   email: "",
   password: "",
   access_level: "",
-  sonda_id: "",
+  rig_id: "",
 };
 
 const Form = ({ formType = "login" }) => {
@@ -56,8 +54,8 @@ const Form = ({ formType = "login" }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoginPage, setIsLoginPage] = useState(true);
   const [isRegisterPage, setIsRegisterPage] = useState(false);
-  const [isLoadingSondas, setIsLoadingSondas] = useState(true);
-  const [sondas, setSondas] = useState([]);
+  const [isLoadingrigs, setIsLoadingrigs] = useState(true);
+  const [rigs, setRigs] = useState([]);
 
   //Tema
   const { palette } = useTheme();
@@ -70,20 +68,20 @@ const Form = ({ formType = "login" }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const loadSondas = async () => {
+    const loadrigs = async () => {
       try {
-        const sondas = await SondasServices.listSondas();
-        setSondas(sondas);
-        console.log("Sondas ===>", sondas);
+        const rigs = await RigsServices.listrigs();
+        setRigs(rigs);
+        console.log("rigs ===>", rigs);
       } catch (error) {
-        setErrorMessage("Erro ao carregar as sondas!");
+        setErrorMessage("Erro ao carregar as rigs!");
         console.log(error);
       } finally {
-        setIsLoadingSondas(false);
+        setIsLoadingrigs(false);
       }
     };
-    loadSondas();
-  }, [setSondas, setIsLoadingSondas]);
+    loadrigs();
+  }, [setRigs, setIsLoadingrigs]);
 
   const register = async (values, onSubmitProps) => {
     setIsLoading(true);
@@ -280,18 +278,16 @@ const Form = ({ formType = "login" }) => {
                     width: "100%",
                   }}
                 >
-                  <InputLabel id="sonda-label">Sonda</InputLabel>
+                  <InputLabel id="rig-label">Sonda</InputLabel>
                   <Select
-                    labelId="sonda-label"
+                    labelId="rig-label"
                     label="Sonda"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.sonda_id}
-                    name="sonda_id"
+                    value={values.rig_id}
+                    name="rig_id"
                     size="small"
-                    error={
-                      Boolean(touched.sonda_id) && Boolean(errors.sonda_id)
-                    }
+                    error={Boolean(touched.rig_id) && Boolean(errors.rig_id)}
                     sx={{
                       padding: ".5rem",
                       borderRadius: "1rem",
@@ -299,7 +295,7 @@ const Form = ({ formType = "login" }) => {
                       backgroundColor: palette.primary[500],
                     }}
                   >
-                    {sondas.map(({ id, name }) => (
+                    {rigs.map(({ id, name }) => (
                       <MenuItem value={id} key={id}>
                         {name}
                       </MenuItem>

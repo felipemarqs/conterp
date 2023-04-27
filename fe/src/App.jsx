@@ -9,18 +9,16 @@ import { themeSettings } from "./theme";
 import Layout from "./pages/Layout";
 import { useAuth } from "./hooks/useAuth";
 
-import Sonda from './pages/Sonda'
-import Admin from './pages/Admin'
+import Rig from "./pages/Rig";
+import Admin from "./pages/Admin";
 
 function App() {
   const mode = useSelector((state) => state.mode);
-  const user = useSelector((state) => state.user)
+  const user = useSelector((state) => state.user);
 
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
 
-  const {auth , loading, isUserAdm} = useAuth()
-
-
+  const { auth, loading, isUserAdm } = useAuth();
 
   if (loading) {
     return <p>loading</p>;
@@ -32,18 +30,25 @@ function App() {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Routes>
-            <Route path="/" element={<Navigate to="/login" replace/>}/>
-            <Route path="/login" element={auth ? <Navigate to="/user/home"/> : <Login /> }/>
-            <Route path="/user" element={auth ? <Layout /> : <Navigate to="/login"/>}>
-              <Route path="/user/home" element={<UserHome/>}/>
-              <Route path="/user/admin" element={isUserAdm ? <Admin/> : <Navigate to="/user/home"/>}/>
-              <Route path="/user/sonda" element={<Sonda/>}/> 
+            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route
+              path="/login"
+              element={auth ? <Navigate to="/user/home" /> : <Login />}
+            />
+            <Route
+              path="/user"
+              element={auth ? <Layout /> : <Navigate to="/login" />}
+            >
+              <Route path="/user/home" element={<UserHome />} />
+              <Route
+                path="/user/admin"
+                element={isUserAdm ? <Admin /> : <Navigate to="/user/home" />}
+              />
+              <Route path="/user/rig" element={<Rig />} />
             </Route>
           </Routes>
-          
         </ThemeProvider>
       </BrowserRouter>
-      
     </div>
   );
 }

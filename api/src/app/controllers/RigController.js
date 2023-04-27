@@ -1,13 +1,13 @@
-const SondasRepositories = require('../repositories/SondaRepositories')
+const RigsRepositories = require('../repositories/RigsRepositories')
 const UserRepositories = require('../repositories/UsersRepositories')
 const isValidUUID = require('../utils/isValidUUID')
 
-class SondaController {
+class RigController {
 
-    //List all sondas
+    //List all rigs
     async index(request, response) {
-        const sondas = await SondasRepositories.findAll()
-        response.json(sondas)
+        const rigs = await RigsRepositories.findAll()
+        response.json(rigs)
     }
 
     //Show a base
@@ -18,10 +18,10 @@ class SondaController {
             return response.status(400).json({ error: "Invalid category ID" });
         }
 
-        const base = await SondasRepositories.findById(id)
+        const base = await RigsRepositories.findById(id)
 
         if (!base) {
-            return response.status(404).json({ error: 'Sonda não encontrada' })
+            return response.status(404).json({ error: 'rig não encontrada' })
         }
         response.json(base)
     }
@@ -34,16 +34,16 @@ class SondaController {
             return response.status(404).json({ error: "Nome é obrigatório!" });
         }
 
-        const sondaNameExists = await SondasRepositories.findByName(name)
+        const rigNameExists = await RigsRepositories.findByName(name)
 
-        if (sondaNameExists) {
+        if (rigNameExists) {
             return response.status(404).json({ error: "Nome já existe!" })
         }
 
 
-        const base = await SondasRepositories.create(name)
+        const rig = await RigsRepositories.create(name)
 
-        response.json(base)
+        response.status(201).json(rig)
     }
 
     async update(request, response) {
@@ -60,30 +60,30 @@ class SondaController {
             return response.status(400).json({ error: "Invalid category ID" });
         }
 
-        const sondaExists = await SondasRepositories.findById(id)
+        const rigExists = await RigsRepositories.findById(id)
 
-        if (!sondaExists) {
+        if (!rigExists) {
             return response.status(404).json({ error: 'Base não encontrada.' })
         }
 
-        const sondaNameExists = await SondasRepositories.findByName(name)
+        const rigNameExists = await RigsRepositories.findByName(name)
 
-        if (sondaNameExists) {
+        if (rigNameExists) {
             return response.status(404).json({ error: 'Noma já existe!' })
         }
 
-        const updatedSonda = await SondasRepositories.update(id, { name })
+        const updatedrig = await RigsRepositories.update(id, { name })
 
-        response.json(updatedSonda)
+        response.json(updatedrig)
     }
 
     async delete(request, response) {
         const { id } = request.params
 
-        await SondasRepositories.delete(id)
+        await RigsRepositories.delete(id)
         response.sendStatus(204);
     }
 
 }
 
-module.exports = new SondaController();
+module.exports = new RigController();

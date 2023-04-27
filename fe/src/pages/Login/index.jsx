@@ -7,11 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 //React Router
 import { useNavigate, useLocation } from "react-router-dom";
 
-//Assets
-import fundoConterp from "../../assets/fundo_conterp.png";
-import sonda from "../../assets/spt60.png";
-import sondaMar from "../../assets/sonda_mar.png";
-
 //Components
 import Form from "../../components/AuthForm";
 import {

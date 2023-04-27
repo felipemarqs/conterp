@@ -73,7 +73,7 @@ const Sidebar = ({
           icon: null,
         },
         {
-          text: "Sonda",
+          text: "rig",
           icon: <ShoppingCartOutlined />,
         },
         {
@@ -103,7 +103,7 @@ const Sidebar = ({
           icon: null,
         },
         {
-          text: "Sonda",
+          text: "rig",
           icon: <ShoppingCartOutlined />,
         },
         {

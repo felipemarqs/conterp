@@ -1,7 +1,9 @@
 const { Router } = require('express')
 
 const UserController = require('./app/controllers/UserController')
-const SondaController = require('./app/controllers/SondaController');
+const RigController = require('./app/controllers/RigController');
+const EfficiencyController = require('./app/controllers/EfficiencyController')
+
 const verifyToken = require('./app/middlewares/verifyToken');
 
 const router = Router();
@@ -15,12 +17,15 @@ router.post('/users/login', UserController.login)
 router.put('/users/:id', UserController.update)
 
 // Base Routes
-router.get('/sondas', SondaController.index)
-router.get('/sondas/:id', SondaController.show)
-router.post('/sondas', SondaController.store)
-router.put('/sondas/:id', SondaController.update)
-router.delete('/sondas/:id', SondaController.delete)
+router.get('/rigs', RigController.index)
+router.get('/rigs/:id', RigController.show)
+router.post('/rigs', RigController.store)
+router.put('/rigs/:id', RigController.update)
+router.delete('/rigs/:id', RigController.delete)
 
+//
+router.get('/efficiency', EfficiencyController.index)
+router.post('/efficiency', EfficiencyController.store)
 
 
 

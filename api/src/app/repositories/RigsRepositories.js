@@ -1,26 +1,26 @@
 const db = require("../../database/index")
-class SondasRepositories {
+class RigsRepositories {
 
     async findAll() {
-        const rows = await db.query(`SELECT * FROM Sondas`)
+        const rows = await db.query(`SELECT * FROM rigs`)
 
         return rows
     }
 
     async findById(id) {
-        const [row] = await db.query(`SELECT * FROM Sondas WHERE id = $1`, [id])
+        const [row] = await db.query(`SELECT * FROM rigs WHERE id = $1`, [id])
         return row
     }
 
     async findByName(name) {
-        const [row] = await db.query(`SELECT * FROM Sondas WHERE name = $1`, [name])
+        const [row] = await db.query(`SELECT * FROM rigs WHERE name = $1`, [name])
         return row
     }
 
 
     async create(name) {
         const [row] = await db.query(
-            `INSERT INTO Sondas (name)
+            `INSERT INTO rigs (name)
             VALUES($1)
             RETURNING *
             `, [name])
@@ -29,7 +29,7 @@ class SondasRepositories {
 
     async update(id, { name }) {
         const [row] = await db.query(`
-        UPDATE Sondas
+        UPDATE rigs
         SET name = $1
         WHERE id = $2
         RETURNING *
@@ -39,9 +39,9 @@ class SondasRepositories {
     }
 
     async delete(id) {
-        const deleteOp = await db.query('DELETE FROM Sondas WHERE id = $1', [id])
+        const deleteOp = await db.query('DELETE FROM rigs WHERE id = $1', [id])
         return deleteOp
     }
 }
 
-module.exports = new SondasRepositories();
+module.exports = new RigsRepositories();
