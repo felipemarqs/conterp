@@ -20,7 +20,7 @@ CREATE TABLE users (
 
 CREATE TABLE efficiency (
     id UUID NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
-    date DATE NOT NULL UNIQUE,
+    date DATE NOT NULL,
     rig_id UUID,
     user_id UUID,
     gloss_hours NUMERIC,
