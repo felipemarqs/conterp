@@ -13,7 +13,7 @@ import {
   FormControl,
 } from "@mui/material";
 
-import {ToastContainer, toast} from 'react-toastify'
+import { ToastContainer, toast } from "react-toastify";
 
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { Formik, yupToFormErrors } from "formik";
@@ -23,14 +23,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLogin, setMode } from "../../state/index";
 import FlexBetween from "../FlexBetween";
 import UsersServices from "../../services/UsersServices";
-import SondasServices from '../../services/SondasServices'
+import SondasServices from "../../services/SondasServices";
+import { FormContainer, RegisterSelectContainer } from "./styles.jsx";
 
 const registerSchema = yup.object().shape({
   name: yup.string().required("Obrigatório"),
   email: yup.string().email("Email Inválido!").required("Obrigatório"),
   password: yup.string().required("Obrigatório"),
   access_level: yup.string().required("Obrigatório"),
-  sonda_id: yup.string()
+  sonda_id: yup.string(),
 });
 
 const loginSchema = yup.object().shape({
@@ -43,12 +44,7 @@ const initialValues = {
   email: "",
   password: "",
   access_level: "",
-  sonda_id: ""
-};
-
-const initialValuesLogin = {
-  email: "",
-  password: "",
+  sonda_id: "",
 };
 
 const Form = ({ formType = "login" }) => {
@@ -56,12 +52,12 @@ const Form = ({ formType = "login" }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [accessLevel, setAccessLevel] = useState("");
-  const [isLoading, setIsLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState("")
-  const [isLoginPage, setIsLoginPage] = useState(true)
-  const [isRegisterPage, setIsRegisterPage] = useState(false)
-  const [isLoadingSondas, setIsLoadingSondas] = useState(true)
-  const [sondas, setSondas] = useState([])
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoginPage, setIsLoginPage] = useState(true);
+  const [isRegisterPage, setIsRegisterPage] = useState(false);
+  const [isLoadingSondas, setIsLoadingSondas] = useState(true);
+  const [sondas, setSondas] = useState([]);
 
   //Tema
   const { palette } = useTheme();
@@ -73,101 +69,89 @@ const Form = ({ formType = "login" }) => {
   //Router
   const navigate = useNavigate();
 
-  console.log("Sondas Antes do User effect==>",sondas)
-  
   useEffect(() => {
     const loadSondas = async () => {
       try {
         const sondas = await SondasServices.listSondas();
-        setSondas(sondas)
-        console.log("Sondas ===>", sondas)
-      } catch(error) {
-        setErrorMessage("Erro ao carregar as sondas!")
-        console.log(error)
+        setSondas(sondas);
+        console.log("Sondas ===>", sondas);
+      } catch (error) {
+        setErrorMessage("Erro ao carregar as sondas!");
+        console.log(error);
       } finally {
-        setIsLoadingSondas(false)
+        setIsLoadingSondas(false);
       }
-    }
-
+    };
     loadSondas();
-  }, [setSondas, setIsLoadingSondas])
-
+  }, [setSondas, setIsLoadingSondas]);
 
   const register = async (values, onSubmitProps) => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
       const newUser = await UsersServices.createUser(values);
       onSubmitProps.resetForm();
-      setErrorMessage("")
-      dispatch(setLogin({
-        user: newUser.user,
-        token: newUser.token
-      }))
+      setErrorMessage("");
+      dispatch(
+        setLogin({
+          user: newUser.user,
+          token: newUser.token,
+        })
+      );
     } catch (error) {
       console.log("error", error.message);
-      
-      setErrorMessage(error.message)
-      
+      setErrorMessage(error.message);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
 
-  const user  = useSelector((state) => state.user)
-  console.log("user", user)
+  const user = useSelector((state) => state.user);
+  console.log("user", user);
 
   const login = async (values, onSubmitProps) => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
       const user = {
         email: values.email,
-        password: values.password
-      }
-      const loggedUser = await UsersServices.loginUser(user)
+        password: values.password,
+      };
+      const loggedUser = await UsersServices.loginUser(user);
       onSubmitProps.resetForm();
-      dispatch(setLogin({
-        user: loggedUser.user,
-        token: loggedUser.token
-      }))
-      setErrorMessage("")
-      console.log("Usuário",loggedUser, "Logado com sucesso!")
+      dispatch(
+        setLogin({
+          user: loggedUser.user,
+          token: loggedUser.token,
+        })
+      );
+      setErrorMessage("");
+      console.log("Usuário", loggedUser, "Logado com sucesso!");
     } catch (error) {
       console.log("error", error.message);
-      setErrorMessage(error.message)
-     
+      setErrorMessage(error.message);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    
-    setErrorMessage("")
-    if (formType === 'login') {
-      setIsLoginPage(true)
-      setIsRegisterPage(false)
-      
-    }  
+    setErrorMessage("");
+    if (formType === "login") {
+      setIsLoginPage(true);
+      setIsRegisterPage(false);
+    }
 
-    if (formType === 'register') {
-      setIsLoginPage(false)
-      setIsRegisterPage(true)
-     
-    }  
-
-  }, [formType])
-
-  
+    if (formType === "register") {
+      setIsLoginPage(false);
+      setIsRegisterPage(true);
+    }
+  }, [formType]);
 
   const handleFormSubmit = async (values, onSubmitProps) => {
+    console.log(values);
 
-    console.log(values)
-   
     if (isRegisterPage) await register(values, onSubmitProps);
     if (isLoginPage) await login(values, onSubmitProps);
   };
-
-  
 
   return (
     <Formik
@@ -186,36 +170,34 @@ const Form = ({ formType = "login" }) => {
         resetForm,
       }) => (
         <form onSubmit={handleSubmit}>
-          <Box display="flex" flexDirection="column" gap="2rem" padding="2rem"
-          sx={{
-            "& .MuiTextField-root": {
-              outline: "none",
-            },
-          }}
+          <FormContainer
+            sx={{
+              "& .MuiTextField-root": {
+                outline: "none",
+              },
+            }}
           >
             <>
               {isRegisterPage && (
-                <>
                 <TextField
-                label="Name"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.name}
-                size="small"
-                InputProps={{
-                  autoComplete: "off"
-                }}
-                name="name"
-                error={Boolean(touched.name) && Boolean(errors.name)}
-                helperText={touched.name && errors.name}
-                sx={{
-                  borderRadius: "1rem",
-                  outline: "none",
-                  border: "2px solid #fff",
-                  backgroundColor: palette.primary[500],            
-                }}
-              />
-                </>
+                  label="Name"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.name}
+                  size="small"
+                  InputProps={{
+                    autoComplete: "off",
+                  }}
+                  name="name"
+                  error={Boolean(touched.name) && Boolean(errors.name)}
+                  helperText={touched.name && errors.name}
+                  sx={{
+                    borderRadius: "1rem",
+                    outline: "none",
+                    border: "2px solid #fff",
+                    backgroundColor: palette.primary[500],
+                  }}
+                />
               )}
               <TextField
                 label="Email"
@@ -224,7 +206,7 @@ const Form = ({ formType = "login" }) => {
                 value={values.email}
                 size="small"
                 InputProps={{
-                  autoComplete: "off"
+                  autoComplete: "off",
                 }}
                 name="email"
                 error={Boolean(touched.email) && Boolean(errors.email)}
@@ -233,7 +215,7 @@ const Form = ({ formType = "login" }) => {
                   borderRadius: "1rem",
                   outline: "none",
                   border: "2px solid #fff",
-                  backgroundColor: palette.primary[500],            
+                  backgroundColor: palette.primary[500],
                 }}
               />
 
@@ -254,11 +236,9 @@ const Form = ({ formType = "login" }) => {
                   backgroundColor: palette.primary[500],
                 }}
               />
-              
             </>
-
             {isRegisterPage && (
-              <Box
+              <RegisterSelectContainer
                 height="100%"
                 width="100%"
                 display="flex"
@@ -268,7 +248,7 @@ const Form = ({ formType = "login" }) => {
               >
                 <FormControl
                   sx={{
-                    width: "100%"
+                    width: "100%",
                   }}
                 >
                   <InputLabel id="access-label">Nível de acesso</InputLabel>
@@ -294,13 +274,13 @@ const Form = ({ formType = "login" }) => {
                     <MenuItem value="adm">Administrador</MenuItem>
                     <MenuItem value="user">Usuário</MenuItem>
                   </Select>
-                  </FormControl>
-                  <FormControl
-                    sx={{
-                      width: "100%"
-                    }}
-                  >
-                  <InputLabel id="sonda-label">Sonda</InputLabel> 
+                </FormControl>
+                <FormControl
+                  sx={{
+                    width: "100%",
+                  }}
+                >
+                  <InputLabel id="sonda-label">Sonda</InputLabel>
                   <Select
                     labelId="sonda-label"
                     label="Sonda"
@@ -310,8 +290,7 @@ const Form = ({ formType = "login" }) => {
                     name="sonda_id"
                     size="small"
                     error={
-                      Boolean(touched.sonda_id) &&
-                      Boolean(errors.sonda_id)
+                      Boolean(touched.sonda_id) && Boolean(errors.sonda_id)
                     }
                     sx={{
                       padding: ".5rem",
@@ -320,22 +299,23 @@ const Form = ({ formType = "login" }) => {
                       backgroundColor: palette.primary[500],
                     }}
                   >
-                    {sondas.map(({id,name}) => (
-                      <MenuItem value={id} key={id}>{name}</MenuItem>
+                    {sondas.map(({ id, name }) => (
+                      <MenuItem value={id} key={id}>
+                        {name}
+                      </MenuItem>
                     ))}
                   </Select>
-                  </FormControl>
-              </Box>
+                </FormControl>
+              </RegisterSelectContainer>
             )}
-            <Box
-            >
+            <Box>
               <Button
                 disabled={isLoading}
                 size="medium"
                 type="submit"
                 sx={{
                   p: "1rem",
-                  width:"50%",
+                  width: "50%",
                   backgroundColor: palette.primary.main,
                   color: "#fff",
                   ":hover": { backgroundColor: palette.primary[700] },
@@ -356,9 +336,7 @@ const Form = ({ formType = "login" }) => {
                 </Box>
               )}
             </Box>
-
-
-          </Box>
+          </FormContainer>
           {/* BUTTONS */}
         </form>
       )}

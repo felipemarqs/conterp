@@ -63,7 +63,7 @@ function reverseTokens(tokensDark) {
     });
     return reversedTokens;
 }
-export const tokensLight = reverseTokens(tokensDark);
+export const tokensLight = tokensDark;
 
 
 
