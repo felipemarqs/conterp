@@ -8,6 +8,25 @@ class EfficienciesRepositories {
         return rows
     }
 
+    async update(id, { date, gloss_hours, available_hours, repair_hours, dtm_hours }) {
+        const [row] = await db.query(`
+        UPDATE efficiencies
+        SET date = $1, gloss_hours = $2, available_hours = $3, repair_hours = $4, dtm_hours = $5
+        WHERE id = $6
+        RETURNING *
+        `, [date, gloss_hours, available_hours, repair_hours, dtm_hours, id])
+
+        return row;
+    }
+
+    async findByDate({ rig_id, date }) {
+        const [row] = await db.query(`
+        SELECT * FROM efficiencies
+        WHERE rig_id = $1 AND date = $2
+        `, [rig_id, date])
+        return row
+    }
+
     async create({
         date,
         rig_id,
@@ -41,6 +60,11 @@ class EfficienciesRepositories {
 
         return row;
 
+    }
+
+    async delete(id) {
+        const deleteOp = await db.query('DELETE FROM efficiencies WHERE id = $1', [id]);
+        return deleteOp
     }
 
 }

@@ -20,7 +20,7 @@ class UsersRepositories {
 
     async findByEmail(email) {
         const [row] = await db.query(`
-            SELECT users.* , rigs.name AS rig_name 
+            SELECT users.* , rigs.name AS rig_name, rigs.id AS rig_id 
             FROM users
             LEFT JOIN rigs ON rigs.id = users.rig_id
             WHERE email = $1`, [email])

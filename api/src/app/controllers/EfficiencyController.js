@@ -24,6 +24,13 @@ class EfficiencyController {
             return response.status(404).json({ error: "Todos os campos são obrigatórios!" });
         }
 
+        const efficiencyDayAlreadyExists = await EfficienciesRepositories.findByDate({ rig_id, date })
+
+        if (efficiencyDayAlreadyExists) {
+            return response.status(404).json({ error: "Data já preenchida" });
+
+        }
+
         if (!isValidUUID(rig_id) || !isValidUUID(user_id)) {
             return response.status(404).json({ error: "IDs Inválidos!" });
 
@@ -56,9 +63,30 @@ class EfficiencyController {
 
     async show(request, response) { }
 
-    async update(request, response) { }
+    async update(request, response) {
+        const { id } = request.params
 
-    async delete(request, response) { }
+        const { date, gloss_hours, available_hours, repair_hours, dtm_hours } = request.body
+
+        if (!date || !gloss_hours || !available_hours || !repair_hours || !dtm_hours) {
+            return response.status(404).json({ error: "Todos os campos são obrigatórios!" });
+        }
+
+        const updatedEfficiency = await EfficienciesRepositories.update(id, { date, gloss_hours, available_hours, repair_hours, dtm_hours })
+
+        response.status(200).json(updatedEfficiency);
+
+    }
+
+    async delete(request, response) {
+
+        const { id } = request.params;
+
+        await EfficienciesRepositories.delete(id);
+
+        response.sendStatus(204);
+
+    }
 }
 module.exports = new EfficiencyController();
 

@@ -5,7 +5,7 @@ class RigsServices {
         this.HttpClient = new HttpClient("http://localhost:3001");
     }
 
-    async listrigs() {
+    async listRigs() {
         const rigs = await this.HttpClient.get(`/rigs`);
 
         console.log("rigs no http", rigs);

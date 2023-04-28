@@ -35,17 +35,22 @@ function App() {
               path="/login"
               element={auth ? <Navigate to="/user/home" /> : <Login />}
             />
+
+            {/* Inicio do Layout */}
             <Route
               path="/user"
               element={auth ? <Layout /> : <Navigate to="/login" />}
             >
+              {/* Inicio das rotas do Layout */}
               <Route path="/user/home" element={<UserHome />} />
               <Route
                 path="/user/admin"
                 element={isUserAdm ? <Admin /> : <Navigate to="/user/home" />}
               />
               <Route path="/user/rig" element={<Rig />} />
+              {/* Fim das rotas do Layout */}
             </Route>
+            {/* Fim do Layout */}
           </Routes>
         </ThemeProvider>
       </BrowserRouter>

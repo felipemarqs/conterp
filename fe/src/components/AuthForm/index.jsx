@@ -68,9 +68,9 @@ const Form = ({ formType = "login" }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const loadrigs = async () => {
+    const loadRigs = async () => {
       try {
-        const rigs = await RigsServices.listrigs();
+        const rigs = await RigsServices.listRigs();
         setRigs(rigs);
         console.log("rigs ===>", rigs);
       } catch (error) {
@@ -80,7 +80,7 @@ const Form = ({ formType = "login" }) => {
         setIsLoadingrigs(false);
       }
     };
-    loadrigs();
+    loadRigs();
   }, [setRigs, setIsLoadingrigs]);
 
   const register = async (values, onSubmitProps) => {

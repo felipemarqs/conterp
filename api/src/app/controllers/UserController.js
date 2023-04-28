@@ -60,7 +60,7 @@ class UserController {
       return response.status(400).json({ error: "Email já cadastrado!" });
     }
 
-    const rigExists = await RigsRepositories.findById(rig_id)
+    const rigExists = await RigsRepositories.findById(rig_id);
 
     if (!rigExists) {
       return response.status(400).json({ error: "Sonda não encontrada!" });
@@ -74,25 +74,23 @@ class UserController {
       email,
       password_hash: passwordHash,
       access_level,
-      rig_id
+      rig_id,
     });
 
     //Se cadastrado com sucesso retornar o Token
     if (newUser) {
-
       const user = await UsersRepositories.findByEmail(email);
-      response
-        .status(201)
-        .json({
-          user: {
-            name: user.name,
-            email: user.email,
-            access_level: user.access_level,
-            rig_name: user.rig_name,
-
-          },
-          token: generateToken(user.id)
-        });
+      response.status(201).json({
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          access_level: user.access_level,
+          rig_id: user.rig_id,
+          rig_name: user.rig_name,
+        },
+        token: generateToken(user.id),
+      });
     }
   }
 
@@ -134,7 +132,7 @@ class UserController {
       return response.status(400).json({ error: "Email já cadastrado!" });
     }
 
-    const rigExists = await RigsRepositories.findById(rig_id)
+    const rigExists = await RigsRepositories.findById(rig_id);
 
     if (!rigExists) {
       return response.status(400).json({ error: "Sonda não encontrada!" });
@@ -148,10 +146,10 @@ class UserController {
       email,
       passwordHash,
       access_level,
-      rig_id
+      rig_id,
     });
 
-    response.json(updatedUser);
+    response.status(200).json(updatedUser);
   }
 
   //Delete a user
@@ -189,12 +187,14 @@ class UserController {
 
     response.status(201).json({
       user: {
+        id: user.id,
         name: user.name,
         email: user.email,
         access_level: user.access_level,
+        rig_id: user.rig_id,
         rig_name: user.rig_name,
       },
-      token: generateToken(user.id)
+      token: generateToken(user.id),
     });
   }
 }

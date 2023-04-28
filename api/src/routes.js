@@ -24,8 +24,10 @@ router.put('/rigs/:id', RigController.update)
 router.delete('/rigs/:id', RigController.delete)
 
 //
-router.get('/efficiency', EfficiencyController.index)
-router.post('/efficiency', EfficiencyController.store)
+router.get('/efficiencies', EfficiencyController.index)
+router.post('/efficiencies', EfficiencyController.store)
+router.put('/efficiencies/:id', EfficiencyController.update)
+router.delete('/efficiencies/:id', EfficiencyController.delete)
 
 
 
