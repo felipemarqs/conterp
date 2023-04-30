@@ -5,7 +5,6 @@ import * as yup from "yup";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { KeyboardDatePicker } from "@mui/lab";
 
 const efficiencySchema = yup.object().shape({
   date: yup.string(),
@@ -131,7 +130,7 @@ const EfficiencyForm = () => {
                 sx={{ gridColumn: "span 2" }}
               />
 
-              <KeyboardDatePicker
+             {/*  <KeyboardDatePicker
                 fullWidth
                 label="Date picker label"
                 name="selectedDate"
@@ -141,7 +140,7 @@ const EfficiencyForm = () => {
                 onBlur={handleBlur}
                 error={touched.selectedDate && Boolean(errors.selectedDate)}
                 helperText={touched.selectedDate && errors.selectedDate}
-              />
+              /> */}
             </Box>
 
             <Box display="flex" justifyContent="end" mt="20px">

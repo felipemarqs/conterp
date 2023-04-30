@@ -1,11 +1,7 @@
 //MUI
 import { Typography, Box, useMediaQuery, useTheme } from "@mui/material";
 
-import { useCallback, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-
-//React Router
-import { useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
 
 //Components
 import Form from "../../components/AuthForm";
