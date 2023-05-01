@@ -18,7 +18,7 @@ CREATE TABLE users (
 );
 
 
-CREATE TABLE efficiency (
+CREATE TABLE efficiencies (
     id UUID NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
     date DATE NOT NULL,
     rig_id UUID,

@@ -1,10 +1,12 @@
 import { Box, Button, TextField, useMediaQuery, useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
+import { useState } from "react";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 
 const efficiencySchema = yup.object().shape({
   date: yup.string(),
@@ -18,7 +20,7 @@ const EfficiencyForm = () => {
   const user = useSelector((state) => state.user);
 
   const initialValues = {
-    date: Date.now().toString(),
+    date: "",
     gloss_hours: "",
     available_hours: "",
     repair_hours: "",
@@ -34,6 +36,8 @@ const EfficiencyForm = () => {
   };
 
   const theme = useTheme();
+
+  const [value, setValue] = useState(null);
 
   return (
     <Box
@@ -130,17 +134,16 @@ const EfficiencyForm = () => {
                 sx={{ gridColumn: "span 2" }}
               />
 
-             {/*  <KeyboardDatePicker
-                fullWidth
-                label="Date picker label"
-                name="selectedDate"
-                inputFormat="dd/MM/yyyy"
-                value={values.selectedDate}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.selectedDate && Boolean(errors.selectedDate)}
-                helperText={touched.selectedDate && errors.selectedDate}
-              /> */}
+              <Box sx={{ gridColumn: "span 2" }}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={["DatePicker"]}>
+                    <DatePicker
+                      value={values.date}
+                      onChange={(date) => setFieldValue("date", date)}
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
+              </Box>
             </Box>
 
             <Box display="flex" justifyContent="end" mt="20px">

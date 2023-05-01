@@ -47,9 +47,6 @@ const initialValues = {
 
 const Form = ({ formType = "login" }) => {
   //States
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [accessLevel, setAccessLevel] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoginPage, setIsLoginPage] = useState(true);
@@ -63,9 +60,6 @@ const Form = ({ formType = "login" }) => {
 
   //State Redux
   const dispatch = useDispatch();
-
-  //Router
-  const navigate = useNavigate();
 
   useEffect(() => {
     const loadRigs = async () => {
