@@ -9,6 +9,8 @@ import { themeSettings } from "./theme";
 import Layout from "./pages/Layout";
 import { useAuth } from "./hooks/useAuth";
 
+import ToastContainer from "./components/Toast/ToastContainer";
+
 import Rig from "./pages/Rig";
 import Admin from "./pages/Admin";
 
@@ -28,6 +30,7 @@ function App() {
     <div className="app">
       <BrowserRouter>
         <ThemeProvider theme={theme}>
+          <ToastContainer />
           <CssBaseline />
           <Routes>
             <Route path="/" element={<Navigate to="/login" replace />} />

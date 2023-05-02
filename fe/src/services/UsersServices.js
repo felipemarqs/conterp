@@ -20,8 +20,10 @@ class UsersServices {
       email: user.email,
       password: user.password,
       access_level: user.access_level,
-      rig_id: user.rig_id
+      rig_id: user.rig_id || null
     };
+
+    console.log("bodddyyy", body)
 
     return this.HttpClient.post(`/users`, {
       body: body,

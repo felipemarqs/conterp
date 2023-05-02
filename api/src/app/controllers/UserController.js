@@ -60,11 +60,15 @@ class UserController {
       return response.status(400).json({ error: "Email já cadastrado!" });
     }
 
+
+    console.log("Rig id => ", rig_id)
     const rigExists = await RigsRepositories.findById(rig_id);
 
-    if (!rigExists) {
+    if (rig_id && !rigExists) {
       return response.status(400).json({ error: "Sonda não encontrada!" });
     }
+
+
 
     //Gerar hash da senha
     const salt = await bcrypt.genSalt();
@@ -74,7 +78,7 @@ class UserController {
       email,
       password_hash: passwordHash,
       access_level,
-      rig_id,
+      rig_id: rig_id || null,
     });
 
     //Se cadastrado com sucesso retornar o Token
@@ -87,7 +91,7 @@ class UserController {
           email: user.email,
           access_level: user.access_level,
           rig_id: user.rig_id,
-          rig_name: user.rig_name,
+          rig_name: user.rig_name || "Diretor",
         },
         token: generateToken(user.id),
       });

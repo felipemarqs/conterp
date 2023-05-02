@@ -4,7 +4,7 @@ const Header = ({ title, subtitle }) => {
   const theme = useTheme();
 
   return (
-    <Box mb="30px">
+    <Box margin="1rem">
       <Typography
         variant="h2"
         color={theme.palette.grey[900]}

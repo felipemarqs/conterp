@@ -13,6 +13,8 @@ import {
   FormControl,
 } from "@mui/material";
 
+import { StyledTextField } from "../StyledTextField";
+
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { Formik, yupToFormErrors } from "formik";
 import * as yup from "yup";
@@ -23,6 +25,7 @@ import FlexBetween from "../FlexBetween";
 import UsersServices from "../../services/UsersServices";
 import RigsServices from "../../services/RigsServices";
 import { FormContainer, RegisterSelectContainer } from "./styles.jsx";
+import toast from "../../utils/toast";
 
 const registerSchema = yup.object().shape({
   name: yup.string().required("Obrigatório"),
@@ -33,8 +36,8 @@ const registerSchema = yup.object().shape({
 });
 
 const loginSchema = yup.object().shape({
-  email: yup.string().email("invalid email").required("required"),
-  password: yup.string().required("required"),
+  email: yup.string().email("Email Inválido!").required("Obrigatório"),
+  password: yup.string().required("Obrigatório"),
 });
 
 const initialValues = {
@@ -68,7 +71,10 @@ const Form = ({ formType = "login" }) => {
         setRigs(rigs);
         console.log("rigs ===>", rigs);
       } catch (error) {
-        setErrorMessage("Erro ao carregar as rigs!");
+        toast({
+          type: "error",
+          text: "Erro ao carregar as rigs!",
+        });
         console.log(error);
       } finally {
         setIsLoadingrigs(false);
@@ -89,9 +95,14 @@ const Form = ({ formType = "login" }) => {
           token: newUser.token,
         })
       );
+      toast({
+        text: "Registrado com Sucesso!",
+      });
     } catch (error) {
-      console.log("error", error.message);
-      setErrorMessage(error.message);
+      toast({
+        type: "error",
+        text: error.message,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -116,9 +127,15 @@ const Form = ({ formType = "login" }) => {
         })
       );
       setErrorMessage("");
+      toast({
+        text: `Bem-vindo de volta ${loggedUser.user.name}!`,
+      });
       console.log("Usuário", loggedUser, "Logado com sucesso!");
     } catch (error) {
-      console.log("error", error.message);
+      toast({
+        type: "error",
+        text: error.message,
+      });
       setErrorMessage(error.message);
     } finally {
       setIsLoading(false);
@@ -171,7 +188,7 @@ const Form = ({ formType = "login" }) => {
           >
             <>
               {isRegisterPage && (
-                <TextField
+                <StyledTextField
                   label="Name"
                   onBlur={handleBlur}
                   onChange={handleChange}
@@ -191,7 +208,7 @@ const Form = ({ formType = "login" }) => {
                   }}
                 />
               )}
-              <TextField
+              <StyledTextField
                 label="Email"
                 onBlur={handleBlur}
                 onChange={handleChange}
@@ -211,8 +228,8 @@ const Form = ({ formType = "login" }) => {
                 }}
               />
 
-              <TextField
-                label="Password"
+              <StyledTextField
+                label="Senha"
                 type="password"
                 size="small"
                 onBlur={handleBlur}
@@ -263,8 +280,8 @@ const Form = ({ formType = "login" }) => {
                       backgroundColor: palette.primary[500],
                     }}
                   >
-                    <MenuItem value="adm">Administrador</MenuItem>
-                    <MenuItem value="user">Usuário</MenuItem>
+                    <MenuItem value="adm">Diretor</MenuItem>
+                    <MenuItem value="user">Administrador</MenuItem>
                   </Select>
                 </FormControl>
                 <FormControl
@@ -274,6 +291,9 @@ const Form = ({ formType = "login" }) => {
                 >
                   <InputLabel id="rig-label">Sonda</InputLabel>
                   <Select
+                    disabled={
+                      !values.access_level || values.access_level === "adm"
+                    }
                     labelId="rig-label"
                     label="Sonda"
                     onBlur={handleBlur}
@@ -313,18 +333,6 @@ const Form = ({ formType = "login" }) => {
               >
                 {isLoginPage ? "LOGIN" : "REGISTER"}
               </Button>
-              {errorMessage && (
-                <Box
-                  padding="1rem .2rem"
-                  borderRadius=".5rem"
-                  backgroundColor={palette.red[500]}
-                  color="#fff"
-                  width="45%"
-                  margin="2rem auto"
-                >
-                  <Typography fontWeight="bold">{errorMessage}</Typography>
-                </Box>
-              )}
             </Box>
           </FormContainer>
           {/* BUTTONS */}

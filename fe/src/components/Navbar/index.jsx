@@ -61,7 +61,7 @@ const Navbar = ({ isSidebarOpen, setIsSidebarOpen }) => {
     <AppBar
       sx={{
         position: "static",
-        //background: "none",
+        background: theme.palette.primary[400],
         boxShadow: "none",
       }}
     >
@@ -96,7 +96,12 @@ const Navbar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                 gap: "1rem",
               }}
             >
-              <Box textAlign="left">
+              <Box
+                textAlign="left"
+                background={theme.palette.primary[500]}
+                width="100%"
+                height="100%"
+              >
                 <Typography
                   fontWeight="bold"
                   fontSize="0.85rem"

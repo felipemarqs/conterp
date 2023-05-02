@@ -4,6 +4,8 @@ import './index.css';
 import App from './App.jsx';
 import { PersistGate } from "redux-persist/integration/react";
 
+
+
 import {
   persistStore,
   persistReducer,
@@ -39,6 +41,7 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistStore(store)}>
+
         <App />
       </PersistGate>
     </Provider>

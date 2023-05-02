@@ -54,6 +54,7 @@ const Sidebar = ({
     ? [
         {
           text: "Home",
+          navText: "home",
           icon: <HomeOutlined />,
         },
         {
@@ -69,11 +70,12 @@ const Sidebar = ({
           icon: <TrendingUpOutlined />,
         },
         {
-          text: "Sub Menu 1",
+          text: "MENU SONDA",
           icon: null,
         },
         {
-          text: "rig",
+          text: "Sonda",
+          navText: "rig",
           icon: <ShoppingCartOutlined />,
         },
         {
@@ -96,14 +98,17 @@ const Sidebar = ({
     : [
         {
           text: "Home",
+          navText: "home",
           icon: <HomeOutlined />,
         },
         {
-          text: "Sub Menu 1",
+          text: "MENU SONDA",
           icon: null,
         },
         {
-          text: "rig",
+          text: "Sonda",
+          navText: "rig",
+
           icon: <ShoppingCartOutlined />,
         },
         {
@@ -141,7 +146,7 @@ const Sidebar = ({
             width: drawerWidth,
             "& .MuiDrawer-paper": {
               color: theme.palette.secondary[200],
-              backgroundColor: theme.palette.background.alt,
+              backgroundColor: theme.palette.primary[500],
               boxSixing: "border-box",
               borderWidth: isNonMobile ? 0 : "2px",
               width: drawerWidth,
@@ -161,7 +166,7 @@ const Sidebar = ({
               </FlexBetween>
             </Box>
             <List>
-              {navItems.map(({ text, icon }) => {
+              {navItems.map(({ text, icon, navText }) => {
                 if (!icon) {
                   return (
                     <Typography key={text} sx={{ m: "2.25rem 0 1rem 3rem" }}>
@@ -170,19 +175,17 @@ const Sidebar = ({
                   );
                 }
 
-                const lcText = text.toLocaleLowerCase();
-
                 return (
                   <ListItem key={text} disablePadding>
                     <ListItemButton
-                      onClick={() => handleToggleMenuItem(lcText)}
+                      onClick={() => handleToggleMenuItem(navText)}
                       sx={{
                         backgroundColor:
-                          active === lcText
+                          active === navText
                             ? theme.palette.secondary[300]
                             : "transparent",
                         color:
-                          active === lcText
+                          active === navText
                             ? theme.palette.primary[600]
                             : theme.palette.secondary[100],
                       }}
@@ -191,7 +194,7 @@ const Sidebar = ({
                         sx={{
                           ml: "2rem",
                           color:
-                            active === lcText
+                            active === navText
                               ? theme.palette.primary[600]
                               : theme.palette.secondary[200],
                         }}
@@ -199,7 +202,7 @@ const Sidebar = ({
                         {icon}
                       </ListItemIcon>
                       <ListItemText primary={text} />
-                      {active === lcText && (
+                      {active === navText && (
                         <ChevronRightOutlined sx={{ ml: "auto" }} />
                       )}
                     </ListItemButton>
