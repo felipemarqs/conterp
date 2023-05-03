@@ -1,4 +1,15 @@
-import { Box, Button, TextField, useMediaQuery, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  useMediaQuery,
+  useTheme,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import { Formik } from "formik";
@@ -6,34 +17,52 @@ import * as yup from "yup";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import {
+  DatePickerContainer,
+  TimerPickerContainer,
+  GlossHoursContainer,
+  StyledInputBase,
+  StyledSwitch,
+  StyledFormControl,
+} from "./styles";
 import "dayjs/locale/pt-br";
 
+import classifications from "../../utils/glossClassifications";
+
 import { StyledTextField } from "../StyledTextField";
-import { StyledSwitch } from "./styles";
+import { name } from "dayjs/locale/pt-br";
 
 const efficiencySchema = yup.object().shape({
-  date: yup.date().required("Obrigatório"),
-  gloss_hours: yup.number(),
+  date: yup.date().nullable().required("Obrigatório"),
+  start_time_gloss: yup.string().nullable(),
+  end_time_gloss: yup.string().nullable(),
+  gloss_classification: yup.string().nullable(),
+  gloss_sub_category: yup.string().nullable(),
   available_hours: yup.number().required("Obrigatório"),
   repair_hours: yup.number().required("Obrigatório"),
   dtm_hours: yup.number().required("Obrigatório"),
 });
 
 const EfficiencyForm = () => {
+  const theme = useTheme();
+
   const user = useSelector((state) => state.user);
 
-  const [hasGlossHours, setHasGlossHours] = useState(true);
+  const [hasGlossHours, setHasGlossHours] = useState(false);
 
   const initialValues = {
     date: "",
-    gloss_hours: "",
+    gloss_classification: "",
+    gloss_sub_category: "",
+    start_time_gloss: "",
+    end_time_gloss: "",
     available_hours: "",
     repair_hours: "",
     dtm_hours: "",
   };
 
-  console.log("user no form de eficiencia: ", user);
+  console.log("Classificações => ", classifications);
   const isNonMobile = useMediaQuery("(min-width:900px)");
 
   const handleFormSubmit = (values, onSubmitProps) => {
@@ -42,13 +71,17 @@ const EfficiencyForm = () => {
     window.alert("Enviou os dados! 😎😎", { values });
   };
 
+  const equipment = classifications.find(
+    (classification) => classification.value === "equipment"
+  );
+
+  const equipmentSubCategories = equipment["subCategory"];
+
   const handleSwitchChange = (event) => {
     setHasGlossHours(event.target.checked);
   };
 
   console.log("Tem hora glosa? =>", hasGlossHours);
-
-  const theme = useTheme();
 
   const [value, setValue] = useState(null);
 
@@ -57,25 +90,15 @@ const EfficiencyForm = () => {
       m="1rem"
       backgroundColor={theme.palette.primary[500]}
       padding="2rem"
+      maxWidth="800px"
       width={isNonMobile ? "60%" : "85%"}
       height="100%"
       borderRadius="1rem"
-      /*  sx={{
-        borderRadius: "1rem",
-        background: "#1c7b7b",
-        boxShadow: "-6px 6px 2px #186969, 6px -6px 2px #208d8d",
-      }} */
     >
       <Box display="flex" justifyContent="center" marginBottom="1rem">
         <h1>Formulário de Eficiência</h1>
       </Box>
-      <Box>
-        <StyledSwitch
-          checked={hasGlossHours}
-          onChange={handleSwitchChange}
-          theme={theme}
-        />
-      </Box>
+
       <Formik
         onSubmit={handleFormSubmit}
         initialValues={initialValues}
@@ -100,45 +123,153 @@ const EfficiencyForm = () => {
                 "& div": { gridColumn: isNonMobile ? undefined : "span 4" },
               }}
             >
-              <Box
-                display="flex"
-                justifyContent="center"
-                sx={{ gridColumn: "span 4" }}
-              >
+              <DatePickerContainer>
                 <LocalizationProvider
                   dateAdapter={AdapterDayjs}
                   adapterLocale="pt-br"
                 >
-                  <DemoContainer components={["DatePicker"]}>
-                    <DatePicker
-                      disableFuture
-                      label="Data"
-                      value={values.date}
-                      error={Boolean(touched.date) && Boolean(errors.date)}
-                      helperText={touched.date && errors.date}
-                      onChange={(date) => setFieldValue("date", date)}
-                    />
-                  </DemoContainer>
+                  <DatePicker
+                    sx={{ width: "100%" }}
+                    disableFuture
+                    label="Data"
+                    name="date"
+                    value={values.date}
+                    error={Boolean(touched.date) && Boolean(errors.date)}
+                    helperText={touched.date && errors.date}
+                    onChange={(date) => setFieldValue("date", date)}
+                  />
                 </LocalizationProvider>
+              </DatePickerContainer>
+
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                gridColumn="span 2"
+                border=".25px solid rgb(255, 255, 255, .25)"
+                borderRadius="4px"
+                padding=".25rem"
+              >
+                <Typography>Possui Glosa</Typography>
+
+                <StyledSwitch
+                  checked={hasGlossHours}
+                  onChange={handleSwitchChange}
+                  theme={theme}
+                />
               </Box>
 
-              <StyledTextField
-                fullWidth
-                variant="outlined"
-                type="number"
-                name="gloss_hours"
-                label="Hora Glosa"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.gloss_hours}
-                error={
-                  Boolean(touched.gloss_hours) && Boolean(errors.gloss_hours)
-                }
-                helperText={touched.gloss_hours && errors.gloss_hours}
-                sx={{ gridColumn: "span 2" }}
-              />
+              {hasGlossHours && (
+                <GlossHoursContainer>
+                  <Typography align="center">Hora Glosa</Typography>
 
-              {values.gloss_hours && "teste"}
+                  <TimerPickerContainer>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <TimePicker
+                        label="Início"
+                        onBlur={handleBlur}
+                        onChange={(start_time_gloss) =>
+                          setFieldValue("start_time_gloss", start_time_gloss)
+                        }
+                        value={values.start_time_gloss}
+                        name="start_time_gloss"
+                        error={
+                          Boolean(touched.start_time_gloss) &&
+                          Boolean(errors.start_time_gloss)
+                        }
+                        helperText={
+                          touched.start_time_gloss && errors.start_time_gloss
+                        }
+                      />
+                      <TimePicker
+                        label="Fim"
+                        onBlur={handleBlur}
+                        name="end_time_gloss"
+                        onChange={(end_time_gloss) =>
+                          setFieldValue("end_time_gloss", end_time_gloss)
+                        }
+                        value={values.end_time_gloss}
+                        error={
+                          Boolean(touched.end_time_gloss) &&
+                          Boolean(errors.end_time_gloss)
+                        }
+                        helperText={
+                          touched.end_time_gloss && errors.end_time_gloss
+                        }
+                      />
+                    </LocalizationProvider>
+                  </TimerPickerContainer>
+
+                  <StyledFormControl>
+                    <InputLabel id="classification-label">
+                      Classificação
+                    </InputLabel>
+                    <Select
+                      labelId="classification-label"
+                      label="Nível de acesso"
+                      input={<StyledInputBase />}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.gloss_classification}
+                      name="gloss_classification"
+                      size="small"
+                      error={
+                        Boolean(touched.gloss_classification) &&
+                        Boolean(errors.gloss_classification)
+                      }
+                      sx={{
+                        padding: ".5rem",
+                        borderRadius: "1rem",
+                        outline: "none",
+                        backgroundColor: theme.palette.primary[500],
+                      }}
+                    >
+                      {classifications.map((classification) => (
+                        <MenuItem
+                          value={classification.value}
+                          key={classification.id}
+                        >
+                          {classification.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </StyledFormControl>
+
+                  {values.gloss_classification === "equipment" && (
+                    <StyledFormControl>
+                      <InputLabel id="sub-category-label">
+                        Sub Categoria
+                      </InputLabel>
+                      <Select
+                        labelId="sub-category-label"
+                        label="Sub Categoria"
+                        input={<StyledInputBase />}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.gloss_sub_category}
+                        name="gloss_sub_category"
+                        size="small"
+                        error={
+                          Boolean(touched.gloss_sub_category) &&
+                          Boolean(errors.gloss_sub_category)
+                        }
+                        sx={{
+                          padding: ".5rem",
+                          borderRadius: "1rem",
+                          outline: "none",
+                          backgroundColor: theme.palette.primary[500],
+                        }}
+                      >
+                        {equipmentSubCategories.map((category) => (
+                          <MenuItem value={category.value} key={category.id}>
+                            {category.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </StyledFormControl>
+                  )}
+                </GlossHoursContainer>
+              )}
 
               <StyledTextField
                 fullWidth

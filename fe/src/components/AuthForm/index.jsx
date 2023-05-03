@@ -247,14 +247,7 @@ const Form = ({ formType = "login" }) => {
               />
             </>
             {isRegisterPage && (
-              <RegisterSelectContainer
-                height="100%"
-                width="100%"
-                display="flex"
-                gap="1rem"
-                justifyContent="space-between"
-                alignItems="center"
-              >
+              <RegisterSelectContainer>
                 <FormControl
                   sx={{
                     width: "100%",
