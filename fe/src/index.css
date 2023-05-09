@@ -11,4 +11,21 @@ body,
   box-sizing: border-box;
 }
 
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #627b7b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1c7b7b;
+}
+
+::-webkit-scrollbar-track:hover {
+  background: #1c7b7b; 
+}
+
+
 

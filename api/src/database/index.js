@@ -5,7 +5,8 @@ const client = new Client({
     port: 5432,
     user: 'root',
     password: 'root',
-    database: 'conterp'
+    database: 'conterp',
+    timezone: 'America/Sao_Paulo'
 })
 
 client.connect();

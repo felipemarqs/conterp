@@ -23,10 +23,30 @@ CREATE TABLE efficiencies (
     date DATE NOT NULL,
     rig_id UUID,
     user_id UUID,
-    gloss_hours NUMERIC,
+    gloss_detail_id UUID,
     available_hours NUMERIC,
     repair_hours NUMERIC,
     dtm_hours NUMERIC,
     FOREIGN KEY(user_id) REFERENCES users(id),
-    FOREIGN KEY(rig_id) REFERENCES rigs(id)
+    FOREIGN KEY(rig_id) REFERENCES rigs(id),
+    FOREIGN KEY (gloss_detail_id) REFERENCES gloss_details(id) 
 );
+
+CREATE TABLE gloss_details (
+    id UUID NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
+    start_hour TIME NOT NULL,
+    end_hour TIME NOT NULL,
+    description VARCHAR,
+    classification VARCHAR NOT NULL,
+    sub_category VARCHAR
+);
+
+INSERT INTO gloss_details (start_hour, end_hour, description, classification, sub_category)
+VALUES ('12:00:00', '12:00:00', 'TESTE', 'TESTE', 'TESTE')
+RETURNING *;
+
+
+DROP TABLE efficiencies;
+
+DROP TABLE gloss_details;
+            

@@ -2,8 +2,40 @@ const db = require("../../database/index")
 
 class EfficienciesRepositories {
 
+    async findById(id) {
+        const [row] = await db.query('SELECT * FROM efficiencies WHERE id = $1', [id])
+        return row
+    }
+
+    async findByRigId(id) {
+        const rows = await db.query(
+            `SELECT efficiencies.*,
+            gloss_details.start_hour AS gloss_start_hour,
+            gloss_details.end_hour AS gloss_end_hour,
+            users.name AS user_name,
+            users.email AS user_email,
+            rigs.name AS rig_name
+            FROM efficiencies
+            LEFT JOIN gloss_details ON gloss_details.id = efficiencies.gloss_detail_id
+            LEFT JOIN users ON users.id = efficiencies.user_id
+            LEFT JOIN rigs ON rigs.id = efficiencies.rig_id
+            WHERE efficiencies.rig_id = $1`, [id])
+        return rows
+    }
+
     async findAll() {
-        const rows = await db.query(`SELECT * FROM efficiencies`)
+        const rows = await db.query(
+            `SELECT efficiencies.*, 
+            gloss_details.start_hour AS gloss_start_hour,
+            gloss_details.end_hour AS gloss_end_hour,
+            users.name AS user_name,
+            users.email AS user_email,
+            rigs.name AS rig_name
+            FROM efficiencies
+            LEFT JOIN gloss_details ON gloss_details.id = efficiencies.gloss_detail_id
+            LEFT JOIN users ON users.id = efficiencies.user_id
+            LEFT JOIN rigs ON rigs.id = efficiencies.rig_id
+            `)
 
         return rows
     }
@@ -31,7 +63,7 @@ class EfficienciesRepositories {
         date,
         rig_id,
         user_id,
-        gloss_hours,
+        gloss_detail_id,
         available_hours,
         repair_hours,
         dtm_hours
@@ -42,7 +74,7 @@ class EfficienciesRepositories {
             date,
             rig_id,
             user_id,
-            gloss_hours,
+            gloss_detail_id,
             available_hours,
             repair_hours,
             dtm_hours
@@ -52,7 +84,7 @@ class EfficienciesRepositories {
         `, [date,
             rig_id,
             user_id,
-            gloss_hours,
+            gloss_detail_id,
             available_hours,
             repair_hours,
             dtm_hours
@@ -70,3 +102,5 @@ class EfficienciesRepositories {
 }
 
 module.exports = new EfficienciesRepositories();
+
+

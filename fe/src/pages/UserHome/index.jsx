@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import EfficienciesServices from "../../services/EfficienciesServices";
 import Header from "../../components/Header";
-import EfficiencyForm from "../../components/EfficiencyForm";
 import { Box } from "@mui/material";
 import placeholder from "./placeholder.png";
 
@@ -10,7 +9,6 @@ const UserHome = () => {
     const loadEfficiencies = async () => {
       try {
         const efficiencies = await EfficienciesServices.listEfficiencies();
-        console.log("Efficiencies ==>", efficiencies);
       } catch (error) {
         console.log(error);
       }

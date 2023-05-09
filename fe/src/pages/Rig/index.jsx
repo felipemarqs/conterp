@@ -9,7 +9,7 @@ const Rig = () => {
   return (
     <>
       <Header
-        title={`Sonda ${user?.rig_name}`}
+        title={`Sonda ${user?.rig_name || ""}`}
         subtitle="Submissão dos dados de eficiência da sonda."
       />
 

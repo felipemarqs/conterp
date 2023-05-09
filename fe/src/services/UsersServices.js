@@ -20,10 +20,8 @@ class UsersServices {
       email: user.email,
       password: user.password,
       access_level: user.access_level,
-      rig_id: user.rig_id || null
+      rig_id: user.rig_id || null,
     };
-
-    console.log("bodddyyy", body)
 
     return this.HttpClient.post(`/users`, {
       body: body,
@@ -31,7 +29,6 @@ class UsersServices {
   }
 
   async loginUser(user) {
-    console.log("user HHPT", user);
     const body = {
       email: user.email,
       password: user.password,

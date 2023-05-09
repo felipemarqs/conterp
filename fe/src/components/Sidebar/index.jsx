@@ -17,7 +17,7 @@ import {
   ChevronLeft,
   ChevronRightOutlined,
   HomeOutlined,
-  ShoppingCartOutlined,
+  FeedOutlined,
   Groups2Outlined,
   ReceiptLongOutlined,
   PublicOutlined,
@@ -27,6 +27,7 @@ import {
   AdminPanelSettingsOutlined,
   TrendingUpOutlined,
   PieChartOutlined,
+  TableViewOutlined,
 } from "@mui/icons-material";
 
 import { useEffect, useState } from "react";
@@ -74,13 +75,14 @@ const Sidebar = ({
           icon: null,
         },
         {
-          text: "Sonda",
-          navText: "rig",
-          icon: <ShoppingCartOutlined />,
+          text: "Formulário",
+          navText: "rig-form",
+          icon: <FeedOutlined />,
         },
         {
-          text: "Customers",
-          icon: <Groups2Outlined />,
+          text: "Listar Eficiências",
+          navText: "list-efficiencies",
+          icon: <TableViewOutlined />,
         },
         {
           text: "Sub Menu 2",
@@ -106,14 +108,14 @@ const Sidebar = ({
           icon: null,
         },
         {
-          text: "Sonda",
-          navText: "rig",
-
-          icon: <ShoppingCartOutlined />,
+          text: "Formulário",
+          navText: "rig-form",
+          icon: <FeedOutlined />,
         },
         {
-          text: "Customers",
-          icon: <Groups2Outlined />,
+          text: "Listar Eficiências",
+          navText: "list-efficiencies",
+          icon: <TableViewOutlined />,
         },
         {
           text: "Sub Menu 2",

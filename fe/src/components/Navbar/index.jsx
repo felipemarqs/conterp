@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   IconButton,
@@ -113,7 +113,7 @@ const Navbar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                   fontSize="0.75rem"
                   sx={{ color: theme.palette.secondary[200] }}
                 >
-                  {user.rig_name}
+                  {user.rig_name ? user.rig_name : "Diretor"}
                 </Typography>
               </Box>
               <ArrowDropDownOutlined

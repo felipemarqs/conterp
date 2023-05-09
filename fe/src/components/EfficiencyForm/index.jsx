@@ -28,10 +28,12 @@ import {
 } from "./styles";
 import "dayjs/locale/pt-br";
 
+import toast from "../../utils/toast";
 import classifications from "../../utils/glossClassifications";
 
 import { StyledTextField } from "../StyledTextField";
-import { name } from "dayjs/locale/pt-br";
+import EfficienciesServices from "../../services/EfficienciesServices";
+import { useNavigate } from "react-router-dom";
 
 const efficiencySchema = yup.object().shape({
   date: yup.date().nullable().required("Obrigatório"),
@@ -45,11 +47,12 @@ const efficiencySchema = yup.object().shape({
 });
 
 const EfficiencyForm = () => {
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.user);
   const theme = useTheme();
 
-  const user = useSelector((state) => state.user);
-
   const [hasGlossHours, setHasGlossHours] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const initialValues = {
     date: "",
@@ -62,13 +65,61 @@ const EfficiencyForm = () => {
     dtm_hours: "",
   };
 
-  console.log("Classificações => ", classifications);
   const isNonMobile = useMediaQuery("(min-width:900px)");
 
-  const handleFormSubmit = (values, onSubmitProps) => {
-    console.log("clicou");
-    console.log(values);
-    window.alert("Enviou os dados! 😎😎", { values });
+  const handleFormSubmit = async (values, onSubmitProps) => {
+    setIsLoading(true);
+    const date = new Date(values.date);
+    const start_hour_fullDate = new Date(values.start_time_gloss);
+    const end_hour_fullDate = new Date(values.end_time_gloss);
+    const end_hour = `${end_hour_fullDate.getHours()}:${end_hour_fullDate.getMinutes()}:00`;
+    const start_hour = `${start_hour_fullDate.getHours()}:${start_hour_fullDate.getMinutes()}:00`;
+
+    console.log({
+      date,
+      rig_id: user.rig_id,
+      user_id: user.id,
+      available_hours: values.available_hours,
+      repair_hours: values.repair_hours,
+      has_gloss_hours: hasGlossHours,
+      end_time_gloss: end_hour,
+      start_time_gloss: start_hour,
+      gloss_classification: values.gloss_classification,
+      gloss_sub_category: values.gloss_sub_category,
+      dtm_hours: values.dtm_hours,
+    });
+
+    try {
+      const efficiency = await EfficienciesServices.createEfficiency({
+        date,
+        rig_id: user.rig_id,
+        user_id: user.id,
+        available_hours: values.available_hours,
+        repair_hours: values.repair_hours,
+        has_gloss_hours: hasGlossHours,
+        end_time_gloss: end_hour,
+        start_time_gloss: start_hour,
+        gloss_classification: values.gloss_classification,
+        gloss_sub_category: values.gloss_sub_category,
+        dtm_hours: values.dtm_hours,
+      });
+
+      onSubmitProps.resetForm();
+
+      toast({
+        type: "default",
+        text: "Dados Enviados com Sucesso!",
+      });
+
+      navigate(`/user/home`);
+    } catch (error) {
+      toast({
+        type: "error",
+        text: error.message,
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const equipment = classifications.find(
@@ -82,8 +133,6 @@ const EfficiencyForm = () => {
   };
 
   console.log("Tem hora glosa? =>", hasGlossHours);
-
-  const [value, setValue] = useState(null);
 
   return (
     <Box
@@ -331,6 +380,7 @@ const EfficiencyForm = () => {
                 variant="contained"
                 size="large"
                 sx={{ width: "50%" }}
+                disabled={isLoading}
               >
                 Enviar
               </Button>
