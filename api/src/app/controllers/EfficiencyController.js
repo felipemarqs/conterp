@@ -37,6 +37,23 @@ class EfficiencyController {
       return response.status(404).json({ error: "O usuário precisa estar vinculado a uma sonda!" });
     }
 
+
+    const startTimeNumber = start_time_gloss.split(":")
+    const endTimeNumber = end_time_gloss.split(":")
+
+    console.log(startTimeNumber[0] > endTimeNumber[0])
+    console.log(startTimeNumber[0], endTimeNumber[0])
+
+    if (startTimeNumber[0] > endTimeNumber[0]) {
+      return response.status(404).json({ error: "O horário final não pode ser menor que o inicial!" });
+    }
+
+    console.log((endTimeNumber[0] - startTimeNumber[0]) + available_hours + repair_hours)
+
+    if (((endTimeNumber[0] - startTimeNumber[0]) + available_hours + repair_hours) > 24) {
+      return response.status(404).json({ error: "A soma dos horários não pode ser maior que 24 Horas" });
+    }
+
     const efficiencyDayAlreadyExists =
       await EfficienciesRepositories.findByDate({ rig_id, date });
 

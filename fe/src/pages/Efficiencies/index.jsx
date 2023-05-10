@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import toast from "../../utils/toast";
 import EfficienciesServices from "../../services/EfficienciesServices";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
@@ -11,7 +11,6 @@ import { useObjectFormatDate } from "../../hooks/useObjectFormatDate";
 
 const Efficiencies = () => {
   const [efficiencies, setEfficiencies] = useState([]);
-  const { isUserAdm, isLoading: isLoadingUser } = useAuth();
 
   const columns = [
     {
@@ -19,6 +18,8 @@ const Efficiencies = () => {
       headerName: "Sonda",
       flex: 0.3,
       cellClassName: "name-column--cell",
+      align: "center",
+      headerAlign: "center",
     },
     {
       field: "date",
@@ -76,13 +77,14 @@ const Efficiencies = () => {
   const user = useSelector((state) => state.user);
   const formattedItems = useObjectFormatDate(efficiencies);
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const theme = useTheme();
 
   console.log(efficiencies);
 
   useEffect(() => {
+    setIsLoading(true);
     const loadEfficiencies = async () => {
       let efficienciesData = null;
       try {
@@ -100,7 +102,7 @@ const Efficiencies = () => {
       }
     };
     loadEfficiencies();
-  }, [isUserAdm, user?.rig_id]);
+  }, [user?.rig_id]);
 
   return (
     <Box m="1.5rem 2.5rem">
